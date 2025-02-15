@@ -1,0 +1,364 @@
+Index: php_win32ps/php_win32ps.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\n    +--------------------------------------------------------------------+\n    | PECL :: win32ps                                                    |\n    +--------------------------------------------------------------------+\n    | Redistribution and use in source and binary forms, with or without |\n    | modification, are permitted provided that the conditions mentioned |\n    | in the accompanying LICENSE file are met.                          |\n    +--------------------------------------------------------------------+\n    | Copyright (c) 2024, Bearsampp <support@bearsampp.com>                 |\n    +--------------------------------------------------------------------+\n*/\n\n/* $Id$ */\n#ifndef PHP_WIN32PS_H\n#define PHP_WIN32PS_H\n\n#include <windows.h>\n#include <psapi.h>\n#include \"../../php-8.2.25-devel-vs16-x64/include/main/php.h\"\n#include \"../../php-8.2.25-devel-vs16-x64/include/Zend/zend.h\"\n\n#define PHP_WIN32PS_VERSION \"2024-dev\"\n#define PHP_WIN32PS_MAXPROC 256\n\n/* error flags */\n#define PHP_WIN32PS_NOTHING         0\n#define PHP_WIN32PS_PID             0x01\n#define PHP_WIN32PS_OPEN_HANDLE     0x02\n#define PHP_WIN32PS_FILE_NAME       0x04\n#define PHP_WIN32PS_MEM_INFO        0x08\n#define PHP_WIN32PS_PROC_TIMES      0x10\n\n#define PHP_WIN32PS_HANDLE_OPS \\\n    PHP_WIN32PS_FILE_NAME|PHP_WIN32PS_MEM_INFO|PHP_WIN32PS_PROC_TIMES\n#define PHP_WIN32PS_ALL \\\n    PHP_WIN32PS_PID|PHP_WIN32PS_OPEN_HANDLE|PHP_WIN32PS_HANDLE_OPS\n\nextern zend_module_entry win32ps_module_entry;\n#define phpext_win32ps_ptr &win32ps_module_entry\n\n#ifdef PHP_WIN32\n#   define PHP_WIN32PS_API __declspec(dllexport)\n#else\n#   define PHP_WIN32PS_API\n#endif\n\n#ifdef ZTS\n#   include \"TSRM.h\"\n#endif\n\nPHP_MINFO_FUNCTION(win32ps);\n\nPHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags);\nPHP_WIN32PS_API void php_win32ps_meminfo(zval *array);\n\nPHP_FUNCTION(win32_ps_list_procs);\nPHP_FUNCTION(win32_ps_stat_proc);\nPHP_FUNCTION(win32_ps_stat_mem);\n\n#endif\n\n/*\n * Local variables:\n * tab-width: 4\n * c-basic-offset: 4\n * End:\n * vim600: noet sw=4 ts=4 fdm=marker\n * vim<600: noet sw=4 ts=4\n */\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps.h b/php_win32ps/php_win32ps.h
+--- a/php_win32ps/php_win32ps.h	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps.h	(date 1733726447851)
+@@ -30,9 +30,9 @@
+ #define PHP_WIN32PS_MEM_INFO        0x08
+ #define PHP_WIN32PS_PROC_TIMES      0x10
+ 
+-#define PHP_WIN32PS_HANDLE_OPS \
++#define PHP_WIN32PS_HANDLE_OPS /
+     PHP_WIN32PS_FILE_NAME|PHP_WIN32PS_MEM_INFO|PHP_WIN32PS_PROC_TIMES
+-#define PHP_WIN32PS_ALL \
++#define PHP_WIN32PS_ALL /
+     PHP_WIN32PS_PID|PHP_WIN32PS_OPEN_HANDLE|PHP_WIN32PS_HANDLE_OPS
+ 
+ extern zend_module_entry win32ps_module_entry;
+Index: php_win32ps/CppProperties.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"configurations\": [\r\n    {\r\n      \"inheritEnvironments\": [\r\n        \"msvc_x64\"\r\n      ],\r\n      \"name\": \"x64-Release\",\r\n      \"includePath\": [\r\n        \"${env.INCLUDE}\",\r\n        \"${workspaceRoot}\\\\**\",\r\n        \"${workspaceRoot}\\\\php-8.2.25-devel-vs16-x64\\\\include\\\\**\", // Ensure this path is correct,\r\n        \"${workspaceRoot}\\\\php-8.2.25-devel-vs16-x64\\\\include\\\\main\\\\**\", // Ensure this path is correct\r\n        \"${workspaceRoot}\\\\php-8.2.25-devel-vs16-x64\\\\include\\\\Zend\\\\**\"\r\n      ],\r\n      \"defines\": [\r\n        \"WIN32\",\r\n        \"NDEBUG\",\r\n        \"UNICODE\",\r\n        \"_UNICODE\"\r\n      ],\r\n      \"intelliSenseMode\": \"windows-msvc-x64\"\r\n    }\r\n  ]\r\n}\r\n
+===================================================================
+diff --git a/php_win32ps/CppProperties.json b/php_win32ps/CppProperties.json
+--- a/php_win32ps/CppProperties.json	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/CppProperties.json	(date 1731941769269)
+@@ -8,9 +8,6 @@
+       "includePath": [
+         "${env.INCLUDE}",
+         "${workspaceRoot}\\**",
+-        "${workspaceRoot}\\php-8.2.25-devel-vs16-x64\\include\\**", // Ensure this path is correct,
+-        "${workspaceRoot}\\php-8.2.25-devel-vs16-x64\\include\\main\\**", // Ensure this path is correct
+-        "${workspaceRoot}\\php-8.2.25-devel-vs16-x64\\include\\Zend\\**"
+       ],
+       "defines": [
+         "WIN32",
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.vcxproj.FileListAbsolute.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\x64\\Release\\php_win32ps\\php_win32ps.pri\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\priconfig.xml\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\priconfig.xml.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\unfiltered.layout.resfiles\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\unfiltered.layout.resfiles.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\filtered.layout.resfiles\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\filtered.layout.resfiles.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\excluded.layout.resfiles\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\excluded.layout.resfiles.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\resources.resfiles\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\resources.resfiles.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\pri.resfiles\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\pri.resfiles.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\qualifiers.txt\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\qualifiers.txt.intermediate\r\nE:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\Release\\MultipleQualifiersPerDimensionFound.txt\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.vcxproj.FileListAbsolute.txt b/php_win32ps/php_win32ps/x64/Release/php_win32ps.vcxproj.FileListAbsolute.txt
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.vcxproj.FileListAbsolute.txt	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.vcxproj.FileListAbsolute.txt	(date 1731886032136)
+@@ -1,16 +1,0 @@
+-E:\Bearsampp-development\php_win32ps\php_win32ps\x64\Release\php_win32ps\php_win32ps.pri
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\priconfig.xml
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\priconfig.xml.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\unfiltered.layout.resfiles
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\unfiltered.layout.resfiles.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\filtered.layout.resfiles
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\filtered.layout.resfiles.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\excluded.layout.resfiles
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\excluded.layout.resfiles.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\resources.resfiles
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\resources.resfiles.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\pri.resfiles
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\pri.resfiles.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\qualifiers.txt
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\qualifiers.txt.intermediate
+-E:\Bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\Release\MultipleQualifiersPerDimensionFound.txt
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.read.1.tlog
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PCH.CPP\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\BIN\\HOSTX64\\X64\\1033\\CLUI.DLL\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PCH.H\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\TARGETVER.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\SDKDDKVER.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINDOWS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\WINAPIFAMILY.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\WINPACKAGEFAMILY.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\EXCPT.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\VCRUNTIME.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\SAL.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\CONCURRENCYSAL.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\VADEFS.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\STDARG.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\WINDEF.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\MINWINDEF.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\SPECSTRINGS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\SPECSTRINGS_STRICT.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\SPECSTRINGS_UNDEF.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\DRIVERSPECS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\SDV_DRIVERSPECS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINNT.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CTYPE.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CORECRT.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CORECRT_WCTYPE.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\KERNELSPECS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\BASETSD.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\GUIDDEF.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\STRING.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CORECRT_MEMORY.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CORECRT_MEMCPY_S.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\ERRNO.H\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\INCLUDE\\VCRUNTIME_STRING.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UCRT\\CORECRT_WSTRING.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\PSHPACK4.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\POPPACK.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\PSHPACK2.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\PSHPACK8.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\PSHPACK1.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\APISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\KTMTYPES.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINBASE.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\APISETCCONV.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\MINWINBASE.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\APIQUERY2.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\PROCESSENV.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\FILEAPIFROMAPP.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\FILEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\DEBUGAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\UTILAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\HANDLEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\ERRHANDLINGAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\FIBERSAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\NAMEDPIPEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\PROFILEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\HEAPAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\IOAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\SYNCHAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\INTERLOCKEDAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\PROCESSTHREADSAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\SYSINFOAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\MEMORYAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\ENCLAVEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\THREADPOOLLEGACYAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\THREADPOOLAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\JOBAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\JOBAPI2.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WOW64APISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\LIBLOADERAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\SECURITYBASEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\NAMESPACEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\SYSTEMTOPOLOGYAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\PROCESSTOPOLOGYAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\SECURITYAPPCONTAINER.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\REALTIMEAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\WINERROR.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\TIMEZONEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINGDI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINUSER.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\TVOUT.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINNLS.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\DATETIMEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\STRINGAPISET.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINCON.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINCONTYPES.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\CONSOLEAPI.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\CONSOLEAPI2.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\CONSOLEAPI3.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINVER.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\VERRSRC.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINREG.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINNETWK.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\SHARED\\STRALIGN.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\WINSVC.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\MCX.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\IMM.H\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\INCLUDE\\10.0.26100.0\\UM\\IME_CMODES.H\r\n^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\DLLMAIN.CPP\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\PHP_WIN32PS.PCH\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.read.1.tlog b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.read.1.tlog
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.read.1.tlog	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.read.1.tlog	(date 1733726429602)
+@@ -1,6 +1,6 @@
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PCH.CPP
+ C:\WINDOWS\GLOBALIZATION\SORTING\SORTDEFAULT.NLS
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\BIN\HOSTX64\X64\1033\CLUI.DLL
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\BIN\HOSTX64\X64\1033\CLUI.DLL
+ C:\WINDOWS\SYSTEM32\TZRES.DLL
+ E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PCH.H
+ E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\TARGETVER.H
+@@ -8,12 +8,12 @@
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UM\WINDOWS.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\WINAPIFAMILY.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\WINPACKAGEFAMILY.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\EXCPT.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\VCRUNTIME.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\SAL.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\CONCURRENCYSAL.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\VADEFS.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\STDARG.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\EXCPT.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\VCRUNTIME.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\SAL.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\CONCURRENCYSAL.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\VADEFS.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\STDARG.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\WINDEF.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\MINWINDEF.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\SPECSTRINGS.H
+@@ -32,7 +32,7 @@
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UCRT\CORECRT_MEMORY.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UCRT\CORECRT_MEMCPY_S.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UCRT\ERRNO.H
+-C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\INCLUDE\VCRUNTIME_STRING.H
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\INCLUDE\VCRUNTIME_STRING.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UCRT\CORECRT_WSTRING.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\PSHPACK4.H
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\SHARED\POPPACK.H
+@@ -99,3 +99,4 @@
+ C:\PROGRAM FILES (X86)\WINDOWS KITS\10\INCLUDE\10.0.26100.0\UM\IME_CMODES.H
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP
+ E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.PCH
++C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\BIN\HOSTX64\X64\MSPDBSRV.EXE
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.write.1.tlog
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PCH.CPP\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\PHP_WIN32PS.PCH\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\VC143.PDB\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\PCH.OBJ\r\n^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\DLLMAIN.CPP|E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS.CPP\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\DLLMAIN.OBJ\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\PHP_WIN32PS.OBJ\r\n^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\DLLMAIN.CPP\r\nE:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PHP_WIN32PS\\X64\\RELEASE\\VC143.PDB\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.write.1.tlog b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.write.1.tlog
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.write.1.tlog	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.write.1.tlog	(date 1733726429601)
+@@ -4,6 +4,5 @@
+ E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\PCH.OBJ
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP|E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS.CPP
+ E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\DLLMAIN.OBJ
+-E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.OBJ
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP
+-E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\VC143.PDB
++E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PHP_WIN32PS\X64\RELEASE\DLLMAIN.OBJ
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/php_win32ps.lastbuildstate
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.42.34432:TargetPlatformVersion=10.0.26100.0:\r\nRelease|x64|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\|\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/php_win32ps.lastbuildstate b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/php_win32ps.lastbuildstate
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/php_win32ps.lastbuildstate	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/php_win32ps.lastbuildstate	(date 1733726428940)
+@@ -1,2 +1,2 @@
+-PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.42.34432:TargetPlatformVersion=10.0.26100.0:
++PlatformToolSet=v143:VCToolArchitecture=Native64Bit:VCToolsVersion=14.43.34604:TargetPlatformVersion=10.0.26100.0:
+ Release|x64|E:\Bearsampp-development\php_win32ps\php_win32ps\|
+Index: .vs/php_win32ps/v17/DocumentLayout.backup.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"Version\": 1,\r\n  \"WorkspaceRootPath\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\\",\r\n  \"Documents\": [\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\php_win32ps.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\.appveyor.yml||{8B382828-6202-11D1-8870-0000F87579D2}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:.appveyor.yml||{8B382828-6202-11D1-8870-0000F87579D2}\"\r\n    },\r\n    {\r\n      \"AbsoluteMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\dllmain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\",\r\n      \"RelativeMoniker\": \"D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\\u003CMiscFiles\\u003E|solutionrelative:php_win32ps\\\\dllmain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}\"\r\n    }\r\n  ],\r\n  \"DocumentGroupContainers\": [\r\n    {\r\n      \"Orientation\": 0,\r\n      \"VerticalTabListWidth\": 256,\r\n      \"DocumentGroups\": [\r\n        {\r\n          \"DockedWidth\": 200,\r\n          \"SelectedChildIndex\": 8,\r\n          \"Children\": [\r\n            {\r\n              \"$type\": \"Bookmark\",\r\n              \"Name\": \"ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 3,\r\n              \"Title\": \"php_win32ps.vcxproj\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.vcxproj\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\php_win32ps.vcxproj\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.vcxproj\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\php_win32ps.vcxproj\",\r\n              \"ViewState\": \"AgIAAJMAAAAAAAAAAAAAALoAAABvAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000698|\",\r\n              \"WhenOpened\": \"2024-11-16T09:57:27.538Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 4,\r\n              \"Title\": \"pch.h\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.h\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\pch.h\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.h\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\pch.h\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAIAAAANAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000680|\",\r\n              \"WhenOpened\": \"2024-11-16T09:55:03.538Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 5,\r\n              \"Title\": \"pch.cpp\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.cpp\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\pch.cpp\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\pch.cpp\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\pch.cpp\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000677|\",\r\n              \"WhenOpened\": \"2024-11-16T09:55:00.487Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 6,\r\n              \"Title\": \".appveyor.yml\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\.appveyor.yml\",\r\n              \"RelativeDocumentMoniker\": \".appveyor.yml\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\.appveyor.yml\",\r\n              \"RelativeToolTip\": \".appveyor.yml\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.003775|\",\r\n              \"WhenOpened\": \"2024-11-16T09:52:39.283Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 1,\r\n              \"Title\": \"CppProperties.json\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\CppProperties.json\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\CppProperties.json\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\CppProperties.json\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\CppProperties.json\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAwAAABIAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.001642|\",\r\n              \"WhenOpened\": \"2024-11-16T09:52:16.525Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 7,\r\n              \"Title\": \"dllmain.cpp\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\dllmain.cpp\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\dllmain.cpp\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\dllmain.cpp\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\dllmain.cpp\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000677|\",\r\n              \"WhenOpened\": \"2024-11-16T09:52:05.48Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 2,\r\n              \"Title\": \"php_win32ps.h\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.h\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\php_win32ps.h\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.h\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\php_win32ps.h\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000680|\",\r\n              \"WhenOpened\": \"2024-11-16T09:49:53.81Z\",\r\n              \"EditorCaption\": \"\"\r\n            },\r\n            {\r\n              \"$type\": \"Document\",\r\n              \"DocumentIndex\": 0,\r\n              \"Title\": \"php_win32ps.cpp\",\r\n              \"DocumentMoniker\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.cpp\",\r\n              \"RelativeDocumentMoniker\": \"php_win32ps\\\\php_win32ps.cpp\",\r\n              \"ToolTip\": \"E:\\\\Bearsampp-development\\\\php_win32ps\\\\php_win32ps\\\\php_win32ps.cpp\",\r\n              \"RelativeToolTip\": \"php_win32ps\\\\php_win32ps.cpp\",\r\n              \"ViewState\": \"AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\",\r\n              \"Icon\": \"ae27a6b0-e345-4288-96df-5eaf394ee369.000677|\",\r\n              \"WhenOpened\": \"2024-11-16T09:49:50.222Z\",\r\n              \"EditorCaption\": \"\"\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}
+===================================================================
+diff --git a/.vs/php_win32ps/v17/DocumentLayout.backup.json b/.vs/php_win32ps/v17/DocumentLayout.backup.json
+--- a/.vs/php_win32ps/v17/DocumentLayout.backup.json	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/.vs/php_win32ps/v17/DocumentLayout.backup.json	(date 1733726428843)
+@@ -3,26 +3,26 @@
+   "WorkspaceRootPath": "E:\\Bearsampp-development\\php_win32ps\\",
+   "Documents": [
+     {
+-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+-    },
+-    {
+-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+-    },
+-    {
+       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\php_win32ps.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+     },
+     {
+-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
++      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
++      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\php_win32ps.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+     },
+     {
+       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\pch.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+     },
+     {
++      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
++      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\php_win32ps.vcxproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
++    },
++    {
++      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
++      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\CppProperties.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
++    },
++    {
+       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:php_win32ps\\pch.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+     },
+@@ -42,7 +42,7 @@
+       "DocumentGroups": [
+         {
+           "DockedWidth": 200,
+-          "SelectedChildIndex": 8,
++          "SelectedChildIndex": 7,
+           "Children": [
+             {
+               "$type": "Bookmark",
+@@ -56,14 +56,13 @@
+               "RelativeDocumentMoniker": "php_win32ps\\php_win32ps.vcxproj",
+               "ToolTip": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.vcxproj",
+               "RelativeToolTip": "php_win32ps\\php_win32ps.vcxproj",
+-              "ViewState": "AgIAAJMAAAAAAAAAAAAAALoAAABvAAAAAAAAAA==",
++              "ViewState": "AgIAAAAAAAAAAAAAAAAAALoAAABvAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000698|",
+-              "WhenOpened": "2024-11-16T09:57:27.538Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:57:27.538Z"
+             },
+             {
+               "$type": "Document",
+-              "DocumentIndex": 4,
++              "DocumentIndex": 2,
+               "Title": "pch.h",
+               "DocumentMoniker": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\pch.h",
+               "RelativeDocumentMoniker": "php_win32ps\\pch.h",
+@@ -71,8 +70,7 @@
+               "RelativeToolTip": "php_win32ps\\pch.h",
+               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAANAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+-              "WhenOpened": "2024-11-16T09:55:03.538Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:55:03.538Z"
+             },
+             {
+               "$type": "Document",
+@@ -84,8 +82,7 @@
+               "RelativeToolTip": "php_win32ps\\pch.cpp",
+               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+-              "WhenOpened": "2024-11-16T09:55:00.487Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:55:00.487Z"
+             },
+             {
+               "$type": "Document",
+@@ -97,21 +94,19 @@
+               "RelativeToolTip": ".appveyor.yml",
+               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+-              "WhenOpened": "2024-11-16T09:52:39.283Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:52:39.283Z"
+             },
+             {
+               "$type": "Document",
+-              "DocumentIndex": 1,
++              "DocumentIndex": 4,
+               "Title": "CppProperties.json",
+               "DocumentMoniker": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\CppProperties.json",
+               "RelativeDocumentMoniker": "php_win32ps\\CppProperties.json",
+               "ToolTip": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\CppProperties.json",
+               "RelativeToolTip": "php_win32ps\\CppProperties.json",
+-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABIAAAAAAAAAA==",
++              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+-              "WhenOpened": "2024-11-16T09:52:16.525Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:52:16.525Z"
+             },
+             {
+               "$type": "Document",
+@@ -123,31 +118,30 @@
+               "RelativeToolTip": "php_win32ps\\dllmain.cpp",
+               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+-              "WhenOpened": "2024-11-16T09:52:05.48Z",
+-              "EditorCaption": ""
++              "WhenOpened": "2024-11-16T09:52:05.48Z"
+             },
+             {
+               "$type": "Document",
+-              "DocumentIndex": 2,
++              "DocumentIndex": 0,
+               "Title": "php_win32ps.h",
+               "DocumentMoniker": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.h",
+               "RelativeDocumentMoniker": "php_win32ps\\php_win32ps.h",
+               "ToolTip": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.h",
+               "RelativeToolTip": "php_win32ps\\php_win32ps.h",
+-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
++              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+               "WhenOpened": "2024-11-16T09:49:53.81Z",
+               "EditorCaption": ""
+             },
+             {
+               "$type": "Document",
+-              "DocumentIndex": 0,
++              "DocumentIndex": 1,
+               "Title": "php_win32ps.cpp",
+               "DocumentMoniker": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.cpp",
+               "RelativeDocumentMoniker": "php_win32ps\\php_win32ps.cpp",
+               "ToolTip": "E:\\Bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps.cpp",
+               "RelativeToolTip": "php_win32ps\\php_win32ps.cpp",
+-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
++              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAYAAAAAAAAAA==",
+               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+               "WhenOpened": "2024-11-16T09:49:50.222Z",
+               "EditorCaption": ""
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.command.1.tlog
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PCH.CPP\r\n/c /I\"E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\\\\" /I\"GENERATED FILES\\\\\" /IPHP_WIN32PS\\X64\\RELEASE\\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc\"pch.h\" /Fp\"PHP_WIN32PS\\X64\\RELEASE\\PHP_WIN32PS.PCH\" /Fo\"PHP_WIN32PS\\X64\\RELEASE\\\\\" /Fd\"PHP_WIN32PS\\X64\\RELEASE\\VC143.PDB\" /external:W3 /Gd /TP /FU\"C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\LIB\\X86\\STORE\\REFERENCES\\PLATFORM.WINMD\" /analyze- /FC E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\PCH.CPP\r\n^E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\DLLMAIN.CPP\r\n/c /I\"E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\\\\" /I\"GENERATED FILES\\\\\" /IPHP_WIN32PS\\X64\\RELEASE\\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu\"pch.h\" /Fp\"PHP_WIN32PS\\X64\\RELEASE\\PHP_WIN32PS.PCH\" /Fo\"PHP_WIN32PS\\X64\\RELEASE\\\\\" /Fd\"PHP_WIN32PS\\X64\\RELEASE\\VC143.PDB\" /external:W3 /Gd /TP /FU\"C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\PREVIEW\\VC\\TOOLS\\MSVC\\14.42.34432\\LIB\\X86\\STORE\\REFERENCES\\PLATFORM.WINMD\" /analyze- /FC E:\\BEARSAMPP-DEVELOPMENT\\PHP_WIN32PS\\PHP_WIN32PS\\DLLMAIN.CPP\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.command.1.tlog b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.command.1.tlog
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.command.1.tlog	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.tlog/CL.command.1.tlog	(date 1733726429602)
+@@ -1,4 +1,4 @@
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PCH.CPP
+-/c /I"E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\\" /I"GENERATED FILES\\" /IPHP_WIN32PS\X64\RELEASE\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc"pch.h" /Fp"PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.PCH" /Fo"PHP_WIN32PS\X64\RELEASE\\" /Fd"PHP_WIN32PS\X64\RELEASE\VC143.PDB" /external:W3 /Gd /TP /FU"C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\LIB\X86\STORE\REFERENCES\PLATFORM.WINMD" /analyze- /FC E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PCH.CPP
++/c /I"E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\\" /I"GENERATED FILES\\" /IPHP_WIN32PS\X64\RELEASE\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc"pch.h" /Fp"PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.PCH" /Fo"PHP_WIN32PS\X64\RELEASE\\" /Fd"PHP_WIN32PS\X64\RELEASE\VC143.PDB" /external:W3 /Gd /TP /FU"C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\LIB\X86\STORE\REFERENCES\PLATFORM.WINMD" /analyze- /FC E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\PCH.CPP
+ ^E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP
+-/c /I"E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\\" /I"GENERATED FILES\\" /IPHP_WIN32PS\X64\RELEASE\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"pch.h" /Fp"PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.PCH" /Fo"PHP_WIN32PS\X64\RELEASE\\" /Fd"PHP_WIN32PS\X64\RELEASE\VC143.PDB" /external:W3 /Gd /TP /FU"C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.42.34432\LIB\X86\STORE\REFERENCES\PLATFORM.WINMD" /analyze- /FC E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP
++/c /I"E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\\" /I"GENERATED FILES\\" /IPHP_WIN32PS\X64\RELEASE\ /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D _WINDLL /D _UNICODE /D UNICODE /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D __WRL_NO_DEFAULT_LIB__ /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"pch.h" /Fp"PHP_WIN32PS\X64\RELEASE\PHP_WIN32PS.PCH" /Fo"PHP_WIN32PS\X64\RELEASE\\" /Fd"PHP_WIN32PS\X64\RELEASE\VC143.PDB" /external:W3 /Gd /TP /FU"C:\PROGRAM FILES\MICROSOFT VISUAL STUDIO\2022\PREVIEW\VC\TOOLS\MSVC\14.43.34604\LIB\X86\STORE\REFERENCES\PLATFORM.WINMD" /analyze- /FC E:\BEARSAMPP-DEVELOPMENT\PHP_WIN32PS\PHP_WIN32PS\DLLMAIN.CPP
+Index: php_win32ps/php_win32ps/x64/Release/php_win32ps.Build.CppClean.log
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>e:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.pch\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\vc143.pdb\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.pchast\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\pch.nativecodeanalysis.sarif\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\pch.nativecodeanalysis.xml\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\pch.obj\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.nativecodeanalysis.sarif\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.nativecodeanalysis.xml\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.obj\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\dllmain.nativecodeanalysis.sarif\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\dllmain.nativecodeanalysis.xml\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\dllmain.obj\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps\\php_win32ps.dll\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps\\php_win32ps.pdb\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps\\php_win32ps.dll.lastcodeanalysissucceeded\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\nativecodeanalysis.read.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\priconfig.xml\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\priconfig.xml.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\unfiltered.layout.resfiles\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\unfiltered.layout.resfiles.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\filtered.layout.resfiles\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\filtered.layout.resfiles.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\excluded.layout.resfiles\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\excluded.layout.resfiles.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\resources.resfiles\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\resources.resfiles.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\pri.resfiles\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\pri.resfiles.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps\\php_win32ps.pri\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\qualifiers.txt\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\qualifiers.txt.intermediate\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\multiplequalifiersperdimensionfound.txt\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.ipdb\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.iobj\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\vc.nativecodeanalysis.all.xml\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\cl.command.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\cl.items.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\cl.read.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\cl.write.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\link.command.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\link.read.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\link.secondary.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\link.write.1.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\php_win32ps.read.1u.tlog\r\ne:\\bearsampp-development\\php_win32ps\\php_win32ps\\php_win32ps\\x64\\release\\php_win32ps.tlog\\php_win32ps.write.1u.tlog\r\n
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/php_win32ps.Build.CppClean.log b/php_win32ps/php_win32ps/x64/Release/php_win32ps.Build.CppClean.log
+--- a/php_win32ps/php_win32ps/x64/Release/php_win32ps.Build.CppClean.log	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ b/php_win32ps/php_win32ps/x64/Release/php_win32ps.Build.CppClean.log	(date 1733726425333)
+@@ -1,45 +1,7 @@
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.pch
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\vc143.pdb
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.pchast
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\pch.nativecodeanalysis.sarif
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\pch.nativecodeanalysis.xml
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\pch.obj
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.nativecodeanalysis.sarif
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.nativecodeanalysis.xml
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.obj
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\dllmain.nativecodeanalysis.sarif
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\dllmain.nativecodeanalysis.xml
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\dllmain.obj
+-e:\bearsampp-development\php_win32ps\php_win32ps\x64\release\php_win32ps\php_win32ps.dll
+-e:\bearsampp-development\php_win32ps\php_win32ps\x64\release\php_win32ps\php_win32ps.pdb
+-e:\bearsampp-development\php_win32ps\php_win32ps\x64\release\php_win32ps\php_win32ps.dll.lastcodeanalysissucceeded
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\nativecodeanalysis.read.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\priconfig.xml
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\priconfig.xml.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\unfiltered.layout.resfiles
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\unfiltered.layout.resfiles.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\filtered.layout.resfiles
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\filtered.layout.resfiles.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\excluded.layout.resfiles
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\excluded.layout.resfiles.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\resources.resfiles
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\resources.resfiles.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\pri.resfiles
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\pri.resfiles.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\x64\release\php_win32ps\php_win32ps.pri
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\qualifiers.txt
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\qualifiers.txt.intermediate
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\multiplequalifiersperdimensionfound.txt
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.ipdb
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.iobj
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\vc.nativecodeanalysis.all.xml
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\cl.command.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\cl.items.tlog
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\cl.read.1.tlog
+ e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\cl.write.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\link.command.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\link.read.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\link.secondary.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\link.write.1.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\php_win32ps.read.1u.tlog
+-e:\bearsampp-development\php_win32ps\php_win32ps\php_win32ps\x64\release\php_win32ps.tlog\php_win32ps.write.1u.tlog

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="33965d0e-c47c-4fff-aded-018ee69f90ce" name="Changes" comment="remove delete folder" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;N6REJ&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Bearsampp/php_win32ps.git&quot;,
+    &quot;accountId&quot;: &quot;89294494-5ae8-43aa-a43e-78d3b3bacfe0&quot;
+  }
+}</component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="Php Current" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2onVoxkELqzmNM9PGCRpZpJAoG2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Bearsampp-development/php_win32ps&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Bearsampp-development\php_win32ps\php_win32ps" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="33965d0e-c47c-4fff-aded-018ee69f90ce" name="Changes" comment="" />
+      <created>1731505505189</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731505505189</updated>
+      <workItem from="1731505506237" duration="627000" />
+      <workItem from="1731506885892" duration="522000" />
+      <workItem from="1731536492598" duration="130000" />
+      <workItem from="1731750373994" duration="4288000" />
+      <workItem from="1731755553076" duration="1369000" />
+      <workItem from="1731884721755" duration="1613000" />
+      <workItem from="1731941679579" duration="90000" />
+      <workItem from="1733725196406" duration="1312000" />
+      <workItem from="1733726811691" duration="4000" />
+      <workItem from="1734300287012" duration="112000" />
+      <workItem from="1734301302003" duration="632000" />
+    </task>
+    <task id="LOCAL-00001" summary="trying to figure out appveyor">
+      <option name="closed" value="true" />
+      <created>1731536594148</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731536594148</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Refactor project structure and update build configuration&#10;&#10;- Simplified `php_win32ps.vcxproj` by removing ARM and ARM64 configurations.&#10;- Updated `.appveyor.yml` to use `${workspaceRoot}` for dynamic path resolution.&#10;- Added `php_win32ps.h` with module entry and function declarations.&#10;- Introduced `LICENSE` file with redistribution terms.&#10;- Created `CppProperties.json` for IntelliSense configuration.&#10;- Added `config.w32` for enabling win32ps support.&#10;- Updated `CREDITS` file with contributor information.&#10;- Renamed several files for consistency.">
+      <option name="closed" value="true" />
+      <created>1731754764479</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731754764479</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update Appveyor cache path and add .codiumai to .gitignore">
+      <option name="closed" value="true" />
+      <created>1731755602668</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731755602668</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Update Appveyor cache path to use build-cache directory">
+      <option name="closed" value="true" />
+      <created>1731756204779</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731756204779</updated>
+    </task>
+    <task id="LOCAL-00005" summary="reverting changes to appveyor.yml">
+      <option name="closed" value="true" />
+      <created>1731756323988</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1731756323988</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Update README.md file name extension">
+      <option name="closed" value="true" />
+      <created>1734301536637</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1734301536637</updated>
+    </task>
+    <task id="LOCAL-00007" summary="remove delete folder">
+      <option name="closed" value="true" />
+      <created>1734301917545</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734301917545</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="trying to figure out appveyor" />
+    <MESSAGE value="Refactor project structure and update build configuration&#10;&#10;- Simplified `php_win32ps.vcxproj` by removing ARM and ARM64 configurations.&#10;- Updated `.appveyor.yml` to use `${workspaceRoot}` for dynamic path resolution.&#10;- Added `php_win32ps.h` with module entry and function declarations.&#10;- Introduced `LICENSE` file with redistribution terms.&#10;- Created `CppProperties.json` for IntelliSense configuration.&#10;- Added `config.w32` for enabling win32ps support.&#10;- Updated `CREDITS` file with contributor information.&#10;- Renamed several files for consistency." />
+    <MESSAGE value="Update Appveyor cache path and add .codiumai to .gitignore" />
+    <MESSAGE value="Update Appveyor cache path to use build-cache directory" />
+    <MESSAGE value="reverting changes to appveyor.yml" />
+    <MESSAGE value="Update README.md file name extension" />
+    <MESSAGE value="remove delete folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove delete folder" />
+  </component>
+</project>

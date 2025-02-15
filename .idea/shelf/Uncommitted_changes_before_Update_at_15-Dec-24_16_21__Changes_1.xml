@@ -1,0 +1,34 @@
+<changelist name="Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1" date="1734301336273" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 15-Dec-24 16:21 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value=".vs/slnx.sqlite" />
+    <option name="AFTER_PATH" value=".vs/slnx.sqlite" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/slnx.sqlite" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".vs/php_win32ps/v17/.wsuo" />
+    <option name="AFTER_PATH" value=".vs/php_win32ps/v17/.wsuo" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/.wsuo" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="php_win32ps/php_win32ps/x64/Release/dllmain.obj" />
+    <option name="AFTER_PATH" value="php_win32ps/php_win32ps/x64/Release/dllmain.obj" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/dllmain.obj" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="php_win32ps/php_win32ps/x64/Release/php_win32ps.pch" />
+    <option name="AFTER_PATH" value="php_win32ps/php_win32ps/x64/Release/php_win32ps.pch" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/php_win32ps.pch" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="php_win32ps/php_win32ps/x64/Release/pch.obj" />
+    <option name="AFTER_PATH" value="php_win32ps/php_win32ps/x64/Release/pch.obj" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/pch.obj" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="php_win32ps/php_win32ps/x64/Release/vc143.pdb" />
+    <option name="AFTER_PATH" value="php_win32ps/php_win32ps/x64/Release/vc143.pdb" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15-Dec-24_16_21_[Changes]1/vc143.pdb" />
+  </binary>
+</changelist>

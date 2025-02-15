@@ -1,0 +1,86 @@
+Index: php_win32ps/php_win32ps/x64/Release/MultipleQualifiersPerDimensionFound.txt
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/MultipleQualifiersPerDimensionFound.txt b/php_win32ps/php_win32ps/x64/Release/MultipleQualifiersPerDimensionFound.txt
+deleted file mode 100644
+--- a/php_win32ps/php_win32ps/x64/Release/MultipleQualifiersPerDimensionFound.txt	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ /dev/null	(revision be16f2caed03367b598478ed0751bc3e14466966)
+@@ -1,1 +0,0 @@
+-False
+\ No newline at end of file
+Index: php_win32ps/php_win32ps/x64/Release/priconfig.xml
+===================================================================
+diff --git a/php_win32ps/php_win32ps/x64/Release/priconfig.xml b/php_win32ps/php_win32ps/x64/Release/priconfig.xml
+deleted file mode 100644
+--- a/php_win32ps/php_win32ps/x64/Release/priconfig.xml	(revision be16f2caed03367b598478ed0751bc3e14466966)
++++ /dev/null	(revision be16f2caed03367b598478ed0751bc3e14466966)
+@@ -1,67 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<resources targetOsVersion="10.0.0" majorVersion="1">
+-  <index root="\" startIndexAt="php_win32ps\x64\Release\filtered.layout.resfiles">
+-    <default>
+-      <qualifier name="Language" value="en-US" />
+-      <qualifier name="Contrast" value="standard" />
+-      <qualifier name="Scale" value="200" />
+-      <qualifier name="HomeRegion" value="001" />
+-      <qualifier name="TargetSize" value="256" />
+-      <qualifier name="LayoutDirection" value="LTR" />
+-      <qualifier name="DXFeatureLevel" value="DX9" />
+-      <qualifier name="Configuration" value="" />
+-      <qualifier name="AlternateForm" value="" />
+-      <qualifier name="Platform" value="UAP" />
+-    </default>
+-    <indexer-config type="RESFILES" qualifierDelimiter="." />
+-  </index>
+-  <index root="\" startIndexAt="php_win32ps\x64\Release\resources.resfiles">
+-    <default>
+-      <qualifier name="Language" value="en-US" />
+-      <qualifier name="Contrast" value="standard" />
+-      <qualifier name="Scale" value="200" />
+-      <qualifier name="HomeRegion" value="001" />
+-      <qualifier name="TargetSize" value="256" />
+-      <qualifier name="LayoutDirection" value="LTR" />
+-      <qualifier name="DXFeatureLevel" value="DX9" />
+-      <qualifier name="Configuration" value="" />
+-      <qualifier name="AlternateForm" value="" />
+-      <qualifier name="Platform" value="UAP" />
+-    </default>
+-    <indexer-config type="RESW" convertDotsToSlashes="true" initialPath="php_win32ps" />
+-    <indexer-config type="RESJSON" initialPath="php_win32ps" />
+-    <indexer-config type="RESFILES" qualifierDelimiter="." />
+-  </index>
+-  <index root="\" startIndexAt="php_win32ps\x64\Release\pri.resfiles">
+-    <default>
+-      <qualifier name="Language" value="en-US" />
+-      <qualifier name="Contrast" value="standard" />
+-      <qualifier name="Scale" value="200" />
+-      <qualifier name="HomeRegion" value="001" />
+-      <qualifier name="TargetSize" value="256" />
+-      <qualifier name="LayoutDirection" value="LTR" />
+-      <qualifier name="DXFeatureLevel" value="DX9" />
+-      <qualifier name="Configuration" value="" />
+-      <qualifier name="AlternateForm" value="" />
+-      <qualifier name="Platform" value="UAP" />
+-    </default>
+-    <indexer-config type="PRI" />
+-    <indexer-config type="RESFILES" qualifierDelimiter="." />
+-  </index>
+-  <index root="php_win32ps\x64\Release\embed" startIndexAt="embed.resfiles">
+-    <default>
+-      <qualifier name="Language" value="en-US" />
+-      <qualifier name="Contrast" value="standard" />
+-      <qualifier name="Scale" value="200" />
+-      <qualifier name="HomeRegion" value="001" />
+-      <qualifier name="TargetSize" value="256" />
+-      <qualifier name="LayoutDirection" value="LTR" />
+-      <qualifier name="DXFeatureLevel" value="DX9" />
+-      <qualifier name="Configuration" value="" />
+-      <qualifier name="AlternateForm" value="" />
+-      <qualifier name="Platform" value="UAP" />
+-    </default>
+-    <indexer-config type="RESFILES" qualifierDelimiter="." />
+-    <indexer-config type="EMBEDFILES" />
+-  </index>
+-</resources>
+\ No newline at end of file
+diff --git a/php_win32ps/php_win32ps/x64/Release/qualifiers.txt b/php_win32ps/php_win32ps/x64/Release/qualifiers.txt
+deleted file mode 100644
