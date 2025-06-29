@@ -43,6 +43,7 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       ARCH: x64
+
       VC: vs16
       PHP_VER: 8.3.22
       TS: 1
@@ -105,8 +106,7 @@ test_script:
 
 deploy:
   - provider: GitHub
-    auth_token:
-      secure: GH_PAT
+    auth_token: $(GH_PAT)
     artifact: /.*\.zip/
     draft: false
     prerelease: false
