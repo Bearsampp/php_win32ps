@@ -75,7 +75,7 @@ PHP_MINFO_FUNCTION(win32ps)
 /* }}} */
 
 /* {{{ int php_win32ps_procinfo */
-PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
+PHP_WIN32PS_API int php_win32ps_procinfo(zend_long proc, zval *array, int error_flags)
 {
 	char f[MAX_PATH + 1] = {0};
 	zval mem, tms;
@@ -85,7 +85,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 	FILETIME creat, kern, user, tmp, now;
 	unsigned __int64 creatx, kernx, userx, nowx;
 	PROCESS_MEMORY_COUNTERS memory = {sizeof(PROCESS_MEMORY_COUNTERS)};
-	
+
 	if (proc <= 0) {
 		/* no info for the IDLE process */
 		if (error_flags & PHP_WIN32PS_PID) {
@@ -93,7 +93,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 		}
 		return FAILURE;
 	}
-	
+
 	if (!(h = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, 0, proc))) {
 		/* we are not allowed to query this process */
 		if (error_flags & PHP_WIN32PS_OPEN_HANDLE) {
@@ -101,7 +101,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 		}
 		return FAILURE;
 	}
-	
+
 	if (proc == 8) {
 		memcpy(f, "*SYSTEM*", l = sizeof("*SYSTEM*") - 1);
 	} else {
@@ -113,7 +113,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 			return FAILURE;
 		}
 	}
-			
+
 	if (!GetProcessMemoryInfo(h, &memory, sizeof(memory))) {
 		if (error_flags & PHP_WIN32PS_MEM_INFO) {
 			php_win32ps_error("Could not determine memory usage", proc);
@@ -121,7 +121,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 		CloseHandle(h);
 		return FAILURE;
 	}
-	
+
 	if (!GetProcessTimes(h, &creat, &tmp, &kern, &user)) {
 		if (error_flags & PHP_WIN32PS_PROC_TIMES) {
 			php_win32ps_error("Could not determine process times", proc);
@@ -130,15 +130,15 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 		return FAILURE;
 	}
 	CloseHandle(h);
-	
-	add_assoc_long(array, "pid", (long) proc);
-	
+
+	add_assoc_long(array, "pid", (zend_long) proc);
+
 	/* sanitize odd paths */
 	if (!strncmp(f, "\\??\\", 3)) {
 		add_assoc_stringl(array, "exe", &f[4], l - 4);
 	} else if (!strncasecmp(f, "\\SystemRoot\\", sizeof("\\SystemRoot\\") - 1)) {
 		char *p, *r;
-		
+
 		if ((r = getenv("SystemRoot")) || (r = getenv("SYSTEMROOT"))) {
 			l = (int) spprintf(&p, 0, "%s%s", r, &f[sizeof("\\SystemRoot")-1]);
 			add_assoc_stringl(array, "exe", p, l);
@@ -148,38 +148,38 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 	} else {
 		add_assoc_stringl(array, "exe", f, l);
 	}
-	
+
 	//MAKE_STD_ZVAL(mem);
 	array_init(&mem);
 	add_assoc_zval(array, "mem", &mem);
 	/* Number of page faults. */
-	add_assoc_long(&mem, "page_fault_count", (long) memory.PageFaultCount);
+	add_assoc_long(&mem, "page_fault_count", (zend_long) memory.PageFaultCount);
 	/* Peak working set size, in bytes. */
-	add_assoc_long(&mem, "peak_working_set_size", (long) memory.PeakWorkingSetSize);
+	add_assoc_long(&mem, "peak_working_set_size", (zend_long) memory.PeakWorkingSetSize);
 	/* Current working set size, in bytes. */
-	add_assoc_long(&mem, "working_set_size", (long) memory.WorkingSetSize);
+	add_assoc_long(&mem, "working_set_size", (zend_long) memory.WorkingSetSize);
 	/* Peak paged pool usage, in bytes. */
-	add_assoc_long(&mem, "quota_peak_paged_pool_usage", (long) memory.QuotaPeakPagedPoolUsage);
+	add_assoc_long(&mem, "quota_peak_paged_pool_usage", (zend_long) memory.QuotaPeakPagedPoolUsage);
 	/* Current paged pool usage, in bytes. */
-	add_assoc_long(&mem, "quota_paged_pool_usage", (long) memory.QuotaPagedPoolUsage);
+	add_assoc_long(&mem, "quota_paged_pool_usage", (zend_long) memory.QuotaPagedPoolUsage);
 	/* Peak nonpaged pool usage, in bytes. */
-	add_assoc_long(&mem, "quota_peak_non_paged_pool_usage", (long) memory.QuotaPeakNonPagedPoolUsage);
+	add_assoc_long(&mem, "quota_peak_non_paged_pool_usage", (zend_long) memory.QuotaPeakNonPagedPoolUsage);
 	/* Current nonpaged pool usage, in bytes. */
-	add_assoc_long(&mem, "quota_non_paged_pool_usage", (long) memory.QuotaNonPagedPoolUsage);
+	add_assoc_long(&mem, "quota_non_paged_pool_usage", (zend_long) memory.QuotaNonPagedPoolUsage);
 	/* Current space allocated for the pagefile, in bytes. Those pages may or may not be in memory. */
-	add_assoc_long(&mem, "pagefile_usage", (long) memory.PagefileUsage);
+	add_assoc_long(&mem, "pagefile_usage", (zend_long) memory.PagefileUsage);
 	/* Peak space allocated for the pagefile, in bytes. */
-	add_assoc_long(&mem, "peak_pagefile_usage", (long) memory.PeakPagefileUsage);
+	add_assoc_long(&mem, "peak_pagefile_usage", (zend_long) memory.PeakPagefileUsage);
 
     //MAKE_STD_ZVAL(tms);
 	array_init(&tms);
 	add_assoc_zval(array, "tms", &tms);
-	
+
 	/* Current time, 100's of nsec */
 	GetSystemTime(&nows);
 	SystemTimeToFileTime(&nows, &now);
 	memcpy(&nowx, &now, sizeof(unsigned __int64));
-	
+
 	/* Creation time, in seconds with msec precision */
 	memcpy(&creatx, &creat, sizeof(unsigned __int64));
 	add_assoc_double(&tms, "created", (double) ((__int64) ((nowx-creatx) / 10000Ui64)) / 1000.0);
@@ -189,7 +189,7 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 	/* User time, in seconds with msec precision */
 	memcpy(&userx, &user, sizeof(unsigned __int64));
 	add_assoc_double(&tms, "user", (double) ((__int64) (userx / 10000Ui64)) / 1000.0);
-	
+
 	return SUCCESS;
 }
 /* }}} */
@@ -198,25 +198,25 @@ PHP_WIN32PS_API int php_win32ps_procinfo(int proc, zval *array, int error_flags)
 PHP_WIN32PS_API void php_win32ps_meminfo(zval *array)
 {
 	MEMORYSTATUSEX memory = {sizeof(MEMORYSTATUSEX)};
-	
+
 	GlobalMemoryStatusEx(&memory);
-	
+
 	/* usage of physical memory in percent */
-	add_assoc_long(array, "load", (long) memory.dwMemoryLoad);
+	add_assoc_long(array, "load", (zend_long) memory.dwMemoryLoad);
 	/* add 1024 bytes as unit, as PHP lacks i64 support */
 	add_assoc_long(array, "unit", 1024L);
 	/* Total size of physical memory, in kbytes. */
-	add_assoc_long(array, "total_phys", (long) (memory.ullTotalPhys / 1024Ui64));
+	add_assoc_long(array, "total_phys", (zend_long) (memory.ullTotalPhys / 1024Ui64));
 	/* Size of physical memory available, in kbytes. */
-	add_assoc_long(array, "avail_phys", (long) (memory.ullAvailPhys / 1024Ui64));
+	add_assoc_long(array, "avail_phys", (zend_long) (memory.ullAvailPhys / 1024Ui64));
 	/* Size of the committed memory limit, in kbytes. */
-	add_assoc_long(array, "total_pagefile", (long) (memory.ullTotalPageFile / 1024Ui64));
+	add_assoc_long(array, "total_pagefile", (zend_long) (memory.ullTotalPageFile / 1024Ui64));
 	/* Size of available memory to commit, in kbytes. */
-	add_assoc_long(array, "avail_pagefile", (long) (memory.ullAvailPageFile / 1024Ui64));
+	add_assoc_long(array, "avail_pagefile", (zend_long) (memory.ullAvailPageFile / 1024Ui64));
 	/* Total size of the user mode portion of the virtual address space of the calling process, in kbytes. */
-	add_assoc_long(array, "total_virtual", (long) (memory.ullTotalVirtual / 1024Ui64));
+	add_assoc_long(array, "total_virtual", (zend_long) (memory.ullTotalVirtual / 1024Ui64));
 	/* Size of unreserved and uncommitted memory in the user mode portion of the virtual address space of the calling process, in kbytes. */
-	add_assoc_long(array, "avail_virtual", (long) (memory.ullAvailVirtual / 1024Ui64));
+	add_assoc_long(array, "avail_virtual", (zend_long) (memory.ullAvailVirtual / 1024Ui64));
 }
 /* }}} */
 
@@ -225,22 +225,23 @@ PHP_WIN32PS_API void php_win32ps_meminfo(zval *array)
 PHP_FUNCTION(win32_ps_list_procs)
 {
 	int i, processes[PHP_WIN32PS_MAXPROC], proc_count = 0;
-	
+
 	if (ZEND_NUM_ARGS()) {
-		WRONG_PARAM_COUNT;
+		zend_wrong_parameters_none_error();
+		RETURN_THROWS();
 	}
-	
+
 	if (!EnumProcesses(processes, sizeof(processes), &proc_count)) {
 		php_win32ps_error("Could not enumerate running processes", 0);
 		RETURN_FALSE;
 	}
-	
+
 	array_init(return_value);
 	for (i = 0; i < proc_count/sizeof(int); ++i) {
 		zval entry;
-		
+
 		array_init(&entry);
-		if (SUCCESS == php_win32ps_procinfo(processes[i], &entry, PHP_WIN32PS_HANDLE_OPS)) {
+		if (SUCCESS == php_win32ps_procinfo((zend_long)processes[i], &entry, PHP_WIN32PS_HANDLE_OPS)) {
 			add_next_index_zval(return_value, &entry);
 		} else {
 			zval_ptr_dtor(&entry);
@@ -254,19 +255,19 @@ PHP_FUNCTION(win32_ps_list_procs)
 PHP_FUNCTION(win32_ps_stat_proc)
 {
 	zend_long process = 0;
-	
+
 	//if (SUCCESS != zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &process))
 	ZEND_PARSE_PARAMETERS_START(0, 1)
 		Z_PARAM_OPTIONAL
 		Z_PARAM_LONG(process)
 	ZEND_PARSE_PARAMETERS_END();
-	
+
 	if (process <= 0) {
-		process = (long) GetCurrentProcessId();
+		process = (zend_long) GetCurrentProcessId();
 	}
-	
+
 	array_init(return_value);
-	php_win32ps_procinfo((int) process, return_value, PHP_WIN32PS_ALL);
+	php_win32ps_procinfo(process, return_value, PHP_WIN32PS_ALL);
 }
 /* }}} */
 
@@ -275,9 +276,10 @@ PHP_FUNCTION(win32_ps_stat_proc)
 PHP_FUNCTION(win32_ps_stat_mem)
 {
 	if (ZEND_NUM_ARGS()) {
-		WRONG_PARAM_COUNT;
+		zend_wrong_parameters_none_error();
+		RETURN_THROWS();
 	}
-	
+
 	array_init(return_value);
 	php_win32ps_meminfo(return_value);
 }
