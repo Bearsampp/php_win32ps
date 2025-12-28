@@ -7,108 +7,50 @@ branches:
 
 clone_folder:  c:\projects\php_win32ps
 
+image: Visual Studio 2022
+
 install:
   ps: |
-
+    Write-Host "Diagnosing environment variables..."
+    Get-ChildItem Env: | Sort-Object Name | ForEach-Object { Write-Host $_.Name }
+    
+    if (-not $env:GH_PAT) {
+        Write-Warning "GH_PAT environment variable is not set. Deployment will fail."
+        Write-Host "CRITICAL: You MUST define 'GH_PAT' in 'Settings -> Environment -> Environment variables'."
+        Write-Host "DO NOT set it in 'Settings -> Deployment' or 'Settings -> Environments' as those are different features."
+        Write-Host "1. Go to Project Settings`n2. Click 'Environment' on the left`n3. Click 'Add variable' in the 'Environment variables' section`n4. Name: GH_PAT`n5. Value: <your token>`n6. Click the lock icon`n7. Click 'Save' at the bottom"
+    } else {
+        Write-Host "GH_PAT is detected."
+    }
     echo "Build cache directory c:\build-cache"
     if (-not (Test-Path c:\build-cache)) {
             mkdir c:\build-cache
     }
 
-    echo "Download PHP 8 binary tools"
-    $bname = 'php-sdk-binary-tools-php-sdk-' + $env:BIN_SDK_VER + '.zip'
-    $bpath = 'php-sdk-' + $env:BIN_SDK_VER
-    echo "Downloading: https://github.com/php/php-sdk-binary-tools/releases/download/$bpath/$bname"
-    if (-not (Test-Path c:\build-cache\$bname)) {
-            Invoke-WebRequest "https://github.com/php/php-sdk-binary-tools/releases/download/$bpath/$bname" -OutFile "c:\build-cache\$bname"
+    echo "Clone PHP SDK binary tools"
+    if (-not (Test-Path c:\build-cache\php-sdk)) {
+        git clone --quiet --depth=1 https://github.com/php/php-sdk-binary-tools.git c:\build-cache\php-sdk 2>$null
+    } else {
+        pushd c:\build-cache\php-sdk
+        git pull --quiet 2>$null
+        popd
     }
-    $dname0 = 'php-sdk-binary-tools-php-sdk-' + $env:BIN_SDK_VER
-    $dname1 = 'php-sdk-' + $env:BIN_SDK_VER
-    if (-not (Test-Path c:\build-cache\$dname1)) {
-            7z x c:\build-cache\$bname -oc:\build-cache
-            # Sleep 5 seconds (process cannot access the file)
-            Start-Sleep -s 5
-            move c:\build-cache\$dname0 c:\build-cache\$dname1
-    }
-
-    echo "Copy GIT files to SRC build directory"
-    xcopy c:\projects\php_win32ps C:\projects\php-src\ext\php_win32ps\ /s /e /y /f
 
 cache:
   c:\build-cache -> .appveyor.yml
 
-environment:
-  BIN_SDK_VER: 2.3.0
-  PTHREADS_VER: 2.9.1
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
-      ARCH: x64
-      VC: vs17
-      PHP_VER: 8.4.16
-      TS: 1
-
 build_script:
   ps: |
-
-    $ts_part = ''
-    if ('0' -eq $env:TS) { $ts_part = '-nts' }
-    $bname = 'php-devel-pack-' + $env:PHP_VER + $ts_part + '-Win32-' + $env:VC.toUpper() + '-' + $env:ARCH + '.zip'
-    echo "Download PHP8 development pack from release http://windows.php.net/downloads/releases/$bname"
-    if (-not (Test-Path c:\build-cache\$bname)) {
-            Invoke-WebRequest "http://windows.php.net/downloads/releases/$bname" -OutFile "c:\build-cache\$bname"
-            if (-not (Test-Path c:\build-cache\$bname)) {
-                    Invoke-WebRequest "http://windows.php.net/downloads/releases/$bname" -OutFile "c:\build-cache\$bname"
-            }
-    }
-    
-    $dname0 = 'php-' + $env:PHP_VER + '-devel-' + $env:VC.toUpper() + '-' + $env:ARCH
-    $dname1 = 'php-' + $env:PHP_VER + $ts_part + '-devel-' + $env:VC.toUpper() + '-' + $env:ARCH
-    if (-not (Test-Path c:\build-cache\$dname1)) {
-            7z x c:\build-cache\$bname -oc:\build-cache
-            # Same directory???
-            #echo Moving c:\build-cache\$dname0 to c:\build-cache\$dname1
-            #move c:\build-cache\$dname0 c:\build-cache\$dname1
-    }
-
-    echo "Main build process..."
-    cd c:\projects\php_win32ps
-    $env:PATH = 'c:\build-cache\' + $dname1 + ';' + $env:PATH
-    echo "" | Out-File -Encoding "ASCII" task.bat
-    echo "call phpize 2>&1" | Out-File -Encoding "ASCII" -Append task.bat
-    $conf_cmd = 'call configure --enable-win32ps=shared --enable-debug-pack 2>&1'
-    echo $conf_cmd | Out-File -Encoding "ASCII" -Append task.bat
-    echo "nmake /nologo 2>&1" | Out-File -Encoding "ASCII" -Append task.bat
-    echo "exit %errorlevel%" | Out-File -Encoding "ASCII" -Append task.bat
-    $here = (Get-Item -Path "." -Verbose).FullName
-    $runner = 'c:\build-cache\php-sdk-' + $env:BIN_SDK_VER + '\phpsdk' + '-' + $env:VC + '-' + $env:ARCH + '.bat'
-    $task = $here + '\task.bat'
-    & $runner -t $task
-
-after_build:
-  ps: |
-
-    echo "Build download archive of build extension and save as artifact..."
-    $ts_part = 'ts'
-    if ('0' -eq $env:TS) { $ts_part = '-nts' }
-    $zip_bname = 'php_win32ps-' + $env:APPVEYOR_REPO_COMMIT.substring(0, 8) + '-' + $env:PHP_VER.substring(0, 3) + '-' + $ts_part + '-' + $env:VC + '-' + $env:ARCH + '.zip'
-    $dir = 'c:\projects\php_win32ps\';
-    if ('x64' -eq $env:ARCH) { $dir = $dir + 'x64\' }
-    $dir = $dir + 'Release'
-    if ('1' -eq $env:TS) { $dir = $dir + '_TS' }
-    & 7z a c:\$zip_bname $dir\php_win32ps.dll
-    Push-AppveyorArtifact c:\$zip_bname
-
-test_script:
-  ps: |
-
-    echo "Start tests..."
+    .\build_all.ps1 -PhpVersion "8.4.16" -VcVersion "vs17"
 
 deploy:
   - provider: GitHub
     auth_token: $(GH_PAT)
-    artifact: /.*\.zip/
+    artifact: /.*\.7z/
     draft: false
     prerelease: false
+    force_update: true
+    release: php_win32ps-8.4.16
+    tag: v8.4.16
     on:
       branch: main
-      APPVEYOR_REPO_TAG: false
