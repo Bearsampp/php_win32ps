@@ -41,10 +41,10 @@ environment:
   BIN_SDK_VER: 2.3.0
   PTHREADS_VER: 2.9.1
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       ARCH: x64
-      VC: vs16
-      PHP_VER: 8.3.29
+      VC: vs17
+      PHP_VER: 8.4.16
       TS: 1
 
 build_script:
