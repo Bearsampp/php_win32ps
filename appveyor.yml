@@ -2,10 +2,10 @@ version: 2026.3.1.{build}
 
 environment:
   matrix:
-    - PHP_VERSION: 8.5.30
+    - PHP_VERSION: 8.5
       VC_VERSION: 17
       ARCH: x64
-    - PHP_VERSION: 8.5.30
+    - PHP_VERSION: 8.5
       VC_VERSION: 17
       ARCH: x86
 
@@ -20,72 +20,150 @@ skip_tags: false
 
 install:
   - ps: |
+      $arch = $env:ARCH
       $phpVersion = $env:PHP_VERSION
       $vcVersion = $env:VC_VERSION
-      $arch = $env:ARCH
       
-      # Download PHP dev pack from windows.php.net
-      $phpUrl = "https://windows.php.net/downloads/releases/php-${phpVersion}-devel-VC${vcVersion}-${arch}.zip"
-      $phpZip = "C:\php-dev.zip"
+      if ($arch -eq "x64") {
+        $archSuffix = "x64"
+      } else {
+        $archSuffix = "x86"
+      }
       
-      Write-Host "Downloading PHP dev pack from: $phpUrl"
-      (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
+      $phpSdkDir = "C:\php-sdk"
+      $phpDevDir = "C:\php-dev"
       
-      # Extract PHP dev pack
-      $phpDir = "C:\php-dev"
-      if (Test-Path $phpDir) { Remove-Item $phpDir -Recurse -Force }
-      New-Item -ItemType Directory -Path $phpDir | Out-Null
+      if (Test-Path $phpSdkDir) { Remove-Item $phpSdkDir -Recurse -Force }
+      if (Test-Path $phpDevDir) { Remove-Item $phpDevDir -Recurse -Force }
       
+      New-Item -ItemType Directory -Path $phpSdkDir | Out-Null
+      New-Item -ItemType Directory -Path $phpDevDir | Out-Null
+      
+      # Download PHP SDK
+      Write-Host "Downloading PHP SDK..."
+      $sdkUrl = "https://github.com/php/php-sdk-binary-tools/archive/refs/heads/master.zip"
+      $sdkZip = "C:\php-sdk.zip"
+      
+      (New-Object Net.WebClient).DownloadFile($sdkUrl, $sdkZip)
       Add-Type -AssemblyName System.IO.Compression.FileSystem
-      [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDir)
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($sdkZip, $phpSdkDir)
       
-      # Set environment variables
-      $env:PHP_DEV_PATH = $phpDir
-      $env:INCLUDE = "$phpDir;$env:INCLUDE"
-      $env:LIB = "$phpDir;$env:LIB"
+      $extracted = Get-ChildItem $phpSdkDir | Select-Object -First 1
+      Move-Item "$phpSdkDir\$extracted\*" $phpSdkDir -Force
+      Remove-Item "$phpSdkDir\$extracted" -Force
+      
+      # Download PHP dev pack
+      $versions = @("8.5.1", "8.5.0")
+      $downloaded = $false
+      
+      foreach ($version in $versions) {
+        $phpUrl = "https://windows.php.net/downloads/releases/php-${version}-devel-VC${vcVersion}-${archSuffix}.zip"
+        $phpZip = "C:\php-dev.zip"
+        
+        Write-Host "Downloading: $phpUrl"
+        
+        try {
+          (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
+          $fileInfo = Get-Item $phpZip
+          
+          if ($fileInfo.Length -gt 500KB) {
+            [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDevDir)
+            Write-Host "Extracted PHP $version"
+            $downloaded = $true
+            break
+          }
+        } catch {
+          Write-Host "Failed: $_"
+        }
+      }
+      
+      if (-not $downloaded) {
+        Write-Host "ERROR: Could not download PHP dev pack"
+        exit 1
+      }
+      
+      $env:PHP_DEV_PATH = $phpDevDir
+      $env:PHP_SDK_PATH = $phpSdkDir
 
 build_script:
   - ps: |
       $arch = $env:ARCH
+      $phpSdkPath = $env:PHP_SDK_PATH
       $phpDevPath = $env:PHP_DEV_PATH
       
-      # Determine platform for Visual Studio
       if ($arch -eq "x64") {
-        $platform = "x64"
+        $vsArch = "amd64"
       } else {
-        $platform = "Win32"
+        $vsArch = "x86"
       }
       
-      # Build the extension
       cd $env:APPVEYOR_BUILD_FOLDER
       
-      # Run buildconf
-      php.exe buildconf.bat
+      $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
+      $vcvarsPath = "$vsPath\VC\Auxiliary\Build\vcvars${vsArch}.bat"
       
-      # Configure
-      .\configure.bat --enable-win32ps
+      # Create batch script for building
+      $buildBat = @"
+@echo off
+setlocal enabledelayedexpansion
+
+call "$vcvarsPath"
+
+cd /d "$env:APPVEYOR_BUILD_FOLDER"
+
+REM Add PHP dev to path
+set INCLUDE=$phpDevPath;%INCLUDE%
+set LIB=$phpDevPath;%LIB%
+
+REM Run buildconf
+php.exe buildconf.bat
+
+REM Configure
+configure.bat --enable-win32ps
+
+REM Build
+nmake
+
+endlocal
+"@
       
-      # Build
-      nmake
+      $buildBat | Out-File -FilePath "C:\build.bat" -Encoding ASCII
+      & cmd /c "C:\build.bat"
 
 after_build:
   - ps: |
       $arch = $env:ARCH
-      $phpVersion = $env:PHP_VERSION
       $buildNumber = $env:APPVEYOR_BUILD_NUMBER
       $version = "2026.3.1.$buildNumber"
       
-      # Create output directory
       $outputDir = "C:\artifacts"
       if (Test-Path $outputDir) { Remove-Item $outputDir -Recurse -Force }
       New-Item -ItemType Directory -Path $outputDir | Out-Null
       
-      # Copy built DLL
-      $dllName = "php_win32ps.dll"
-      if (Test-Path "Release_TS\$dllName") {
-        Copy-Item "Release_TS\$dllName" "$outputDir\php_win32ps-${version}-${arch}.dll"
-      } elseif (Test-Path "Release\$dllName") {
-        Copy-Item "Release\$dllName" "$outputDir\php_win32ps-${version}-${arch}.dll"
+      $dllLocations = @(
+        "Release_TS\php_win32ps.dll",
+        "Release\php_win32ps.dll"
+      )
+      
+      $found = $false
+      foreach ($location in $dllLocations) {
+        if (Test-Path $location) {
+          Copy-Item $location "$outputDir\php_win32ps-${version}-${arch}.dll"
+          $found = $true
+          break
+        }
+      }
+      
+      if (-not $found) {
+        $dlls = Get-ChildItem -Recurse -Filter "php_win32ps.dll" -ErrorAction SilentlyContinue
+        if ($dlls) {
+          Copy-Item $dlls[0].FullName "$outputDir\php_win32ps-${version}-${arch}.dll"
+          $found = $true
+        }
+      }
+      
+      if ($found) {
+        Write-Host "DLL copied to artifacts"
       }
 
 artifacts:
@@ -95,7 +173,7 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: GH_PAT
+      secure: YOUR_GITHUB_TOKEN_HERE
     artifact: php_win32ps
     draft: false
     prerelease: false
