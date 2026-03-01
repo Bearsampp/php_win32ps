@@ -99,9 +99,9 @@ build_script:
       $phpSdkPath = $env:PHP_SDK_PATH
       
       if ($arch -eq "x64") {
-        $vsArch = "amd64"
+        $vcvarsFile = "vcvars64.bat"
       } else {
-        $vsArch = "x86"
+        $vcvarsFile = "vcvars32.bat"
       }
       
       cd $env:APPVEYOR_BUILD_FOLDER
@@ -111,7 +111,7 @@ build_script:
       Write-Host "PHP SDK Path: $phpSdkPath"
       
       $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
-      $vcvarsPath = "$vsPath\VC\Auxiliary\Build\vcvars${vsArch}.bat"
+      $vcvarsPath = "$vsPath\VC\Auxiliary\Build\$vcvarsFile"
       
       Write-Host "vcvarsPath: $vcvarsPath"
       
