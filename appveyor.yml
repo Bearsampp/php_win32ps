@@ -63,6 +63,7 @@ install:
       try {
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
         $webClient = New-Object System.Net.WebClient
+        $webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
         $webClient.DownloadFile($phpUrl, $phpZip)
         
         $fileInfo = Get-Item $phpZip
