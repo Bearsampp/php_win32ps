@@ -96,6 +96,15 @@ build_script:
         $env:PHP_SDK_VC_DIR = "C:\Program Files\Microsoft Visual Studio\2022\Community"
       }
       
+      $vcvarsFile = if ($arch -eq "x64") { "vcvars64.bat" } else { "vcvars32.bat" }
+      $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
+      $vcvarsPath = "$vsPath\VC\Auxiliary\Build\$vcvarsFile"
+      
+      if (-not (Test-Path $vcvarsPath)) {
+        Write-Host "ERROR: vcvars not found at $vcvarsPath"
+        exit 1
+      }
+      
       $oldPath = $env:PATH
       $env:PATH = "$develDirPath\bin;$develDirPath;$oldPath"
       
@@ -108,13 +117,13 @@ build_script:
       }
       
       Write-Host "Running phpize..."
-      & cmd /c "cd $projectRoot && call `"$phpizePath`""
+      & cmd /c "`"$vcvarsPath`" && cd $projectRoot && call `"$phpizePath`""
       
       Write-Host "Running configure..."
-      & cmd /c "cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack"
+      & cmd /c "`"$vcvarsPath`" && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack"
       
       Write-Host "Running nmake..."
-      & cmd /c "cd $projectRoot && nmake /nologo"
+      & cmd /c "`"$vcvarsPath`" && cd $projectRoot && nmake /nologo"
       
       $env:PATH = $oldPath
 
