@@ -96,6 +96,7 @@ build_script:
   - ps: |
       $arch = $env:ARCH
       $phpDevPath = $env:PHP_DEV_PATH
+      $phpSdkPath = $env:PHP_SDK_PATH
       
       if ($arch -eq "x64") {
         $vsArch = "amd64"
@@ -105,11 +106,22 @@ build_script:
       
       cd $env:APPVEYOR_BUILD_FOLDER
       
+      Write-Host "Build folder: $(Get-Location)"
+      Write-Host "PHP Dev Path: $phpDevPath"
+      Write-Host "PHP SDK Path: $phpSdkPath"
+      
       $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
       $vcvarsPath = "$vsPath\VC\Auxiliary\Build\vcvars${vsArch}.bat"
       
+      Write-Host "vcvarsPath: $vcvarsPath"
+      
+      if (-not (Test-Path $vcvarsPath)) {
+        Write-Host "ERROR: vcvars not found"
+        exit 1
+      }
+      
       Write-Host "Setting up Visual Studio environment..."
-      & cmd /c "$vcvarsPath && set" | ForEach-Object {
+      & cmd /c "`"$vcvarsPath`" && set" | ForEach-Object {
         if ($_ -match "^(.*?)=(.*)$") {
           [Environment]::SetEnvironmentVariable($matches[1], $matches[2])
         }
@@ -117,15 +129,16 @@ build_script:
       
       $env:INCLUDE = "$phpDevPath;$env:INCLUDE"
       $env:LIB = "$phpDevPath;$env:LIB"
+      $env:PATH = "$phpSdkPath;$env:PATH"
       
       Write-Host "Running buildconf..."
-      & cmd /c "php.exe buildconf.bat"
+      & cmd /c "`"$vcvarsPath`" && php.exe buildconf.bat"
       
       Write-Host "Running configure..."
-      & cmd /c "configure.bat --enable-win32ps"
+      & cmd /c "`"$vcvarsPath`" && configure.bat --enable-win32ps"
       
       Write-Host "Running nmake..."
-      & cmd /c "nmake"
+      & cmd /c "`"$vcvarsPath`" && nmake"
 
 after_build:
   - ps: |
