@@ -39,7 +39,6 @@ install:
       New-Item -ItemType Directory -Path $phpSdkDir | Out-Null
       New-Item -ItemType Directory -Path $phpDevDir | Out-Null
       
-      # Download PHP SDK
       Write-Host "Downloading PHP SDK..."
       $sdkUrl = "https://github.com/php/php-sdk-binary-tools/archive/refs/heads/master.zip"
       $sdkZip = "C:\php-sdk.zip"
@@ -52,7 +51,6 @@ install:
       Move-Item "$phpSdkDir\$extracted\*" $phpSdkDir -Force
       Remove-Item "$phpSdkDir\$extracted" -Force
       
-      # Download PHP dev pack
       $versions = @("8.5.1", "8.5.0")
       $downloaded = $false
       
@@ -88,7 +86,6 @@ install:
 build_script:
   - ps: |
       $arch = $env:ARCH
-      $phpSdkPath = $env:PHP_SDK_PATH
       $phpDevPath = $env:PHP_DEV_PATH
       
       if ($arch -eq "x64") {
@@ -102,33 +99,24 @@ build_script:
       $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
       $vcvarsPath = "$vsPath\VC\Auxiliary\Build\vcvars${vsArch}.bat"
       
-      # Create batch script for building
-      $buildBat = @"
-@echo off
-setlocal enabledelayedexpansion
-
-call "$vcvarsPath"
-
-cd /d "$env:APPVEYOR_BUILD_FOLDER"
-
-REM Add PHP dev to path
-set INCLUDE=$phpDevPath;%INCLUDE%
-set LIB=$phpDevPath;%LIB%
-
-REM Run buildconf
-php.exe buildconf.bat
-
-REM Configure
-configure.bat --enable-win32ps
-
-REM Build
-nmake
-
-endlocal
-"@
+      Write-Host "Setting up Visual Studio environment..."
+      & cmd /c "$vcvarsPath && set" | ForEach-Object {
+        if ($_ -match "^(.*?)=(.*)$") {
+          [Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+        }
+      }
       
-      $buildBat | Out-File -FilePath "C:\build.bat" -Encoding ASCII
-      & cmd /c "C:\build.bat"
+      $env:INCLUDE = "$phpDevPath;$env:INCLUDE"
+      $env:LIB = "$phpDevPath;$env:LIB"
+      
+      Write-Host "Running buildconf..."
+      & cmd /c "php.exe buildconf.bat"
+      
+      Write-Host "Running configure..."
+      & cmd /c "configure.bat --enable-win32ps"
+      
+      Write-Host "Running nmake..."
+      & cmd /c "nmake"
 
 after_build:
   - ps: |
