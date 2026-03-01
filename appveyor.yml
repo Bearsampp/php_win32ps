@@ -51,32 +51,25 @@ install:
       Move-Item "$phpSdkDir\$extracted\*" $phpSdkDir -Force
       Remove-Item "$phpSdkDir\$extracted" -Force
       
-      $versions = @("8.5.1", "8.5.0")
-      $downloaded = $false
+      $version = "8.5.1"
+      $phpUrl = "https://windows.php.net/downloads/releases/php-${version}-devel-VC${vcVersion}-${archSuffix}.zip"
+      $phpZip = "C:\php-dev.zip"
       
-      foreach ($version in $versions) {
-        $phpUrl = "https://windows.php.net/downloads/releases/php-${version}-devel-VC${vcVersion}-${archSuffix}.zip"
-        $phpZip = "C:\php-dev.zip"
+      Write-Host "Downloading: $phpUrl"
+      
+      try {
+        (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
+        $fileInfo = Get-Item $phpZip
         
-        Write-Host "Downloading: $phpUrl"
-        
-        try {
-          (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
-          $fileInfo = Get-Item $phpZip
-          
-          if ($fileInfo.Length -gt 500KB) {
-            [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDevDir)
-            Write-Host "Extracted PHP $version"
-            $downloaded = $true
-            break
-          }
-        } catch {
-          Write-Host "Failed: $_"
+        if ($fileInfo.Length -gt 500KB) {
+          [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDevDir)
+          Write-Host "Extracted PHP $version"
+        } else {
+          Write-Host "ERROR: Downloaded file is too small"
+          exit 1
         }
-      }
-      
-      if (-not $downloaded) {
-        Write-Host "ERROR: Could not download PHP dev pack"
+      } catch {
+        Write-Host "ERROR: Failed to download PHP dev pack: $_"
         exit 1
       }
       
