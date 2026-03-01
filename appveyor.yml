@@ -52,20 +52,48 @@ install:
       Remove-Item "$phpSdkDir\$extracted" -Force
       
       $version = "8.5.1"
-      $phpUrl = "https://windows.php.net/downloads/releases/php-${version}-devel-VC${vcVersion}-${archSuffix}.zip"
       $phpZip = "C:\php-dev.zip"
       
-      Write-Host "Downloading: $phpUrl"
+      Write-Host "Downloading: php-devel-pack-${version}-Win32-vs${vcVersion}-${archSuffix}.zip"
+      $phpUrl = "https://windows.php.net/downloads/releases/php-devel-pack-${version}-Win32-vs${vcVersion}-${archSuffix}.zip"
       
       try {
-        (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
-        $fileInfo = Get-Item $phpZip
+        Write-Host "Attempting download with retry..."
+        $maxRetries = 3
+        $retryCount = 0
+        $downloadSuccess = $false
         
-        if ($fileInfo.Length -gt 500KB) {
+        while ($retryCount -lt $maxRetries -and -not $downloadSuccess) {
+          try {
+            (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
+            $fileInfo = Get-Item $phpZip
+            Write-Host "Downloaded file size: $($fileInfo.Length) bytes"
+            
+            if ($fileInfo.Length -gt 1MB) {
+              $downloadSuccess = $true
+            } else {
+              Write-Host "File too small, retrying... (attempt $($retryCount + 1)/$maxRetries)"
+              Remove-Item $phpZip -Force -ErrorAction SilentlyContinue
+              $retryCount++
+              Start-Sleep -Seconds 2
+            }
+          } catch {
+            Write-Host "Download attempt failed: $_"
+            $retryCount++
+            Start-Sleep -Seconds 2
+          }
+        }
+        
+        if (-not $downloadSuccess) {
+          Write-Host "ERROR: Could not download valid PHP dev pack after $maxRetries attempts"
+          exit 1
+        }
+        
+        try {
           [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDevDir)
-          Write-Host "Extracted PHP $version"
-        } else {
-          Write-Host "ERROR: Downloaded file is too small"
+          Write-Host "Extracted PHP $version successfully"
+        } catch {
+          Write-Host "ERROR: Failed to extract: $_"
           exit 1
         }
       } catch {
