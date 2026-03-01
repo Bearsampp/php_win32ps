@@ -2,11 +2,11 @@ version: 2026.3.1.{build}
 
 environment:
   matrix:
-    - PHP_VERSION: 8.5
-      VC_VERSION: 17
+    - PHP_VERSION: 8.5.1
+      VC_VERSION: vs17
       ARCH: x64
-    - PHP_VERSION: 8.5
-      VC_VERSION: 17
+    - PHP_VERSION: 8.5.1
+      VC_VERSION: vs17
       ARCH: x86
 
 image: Visual Studio 2022
@@ -21,6 +21,8 @@ skip_tags: false
 install:
   - ps: |
       $arch = $env:ARCH
+      $phpVersion = $env:PHP_VERSION
+      $vcVersion = $env:VC_VERSION
       
       if ($arch -eq "x64") {
         $archSuffix = "x64"
@@ -28,140 +30,142 @@ install:
         $archSuffix = "x86"
       }
       
-      $phpDevDir = "C:\php-dev"
+      $buildCache = "C:\build-cache"
+      if (-not (Test-Path $buildCache)) {
+        New-Item -ItemType Directory -Path $buildCache | Out-Null
+      }
       
-      if (Test-Path $phpDevDir) { Remove-Item $phpDevDir -Recurse -Force }
-      New-Item -ItemType Directory -Path $phpDevDir | Out-Null
+      $develPackName = "php-devel-pack-$phpVersion-Win32-$vcVersion-$archSuffix.zip"
+      $develPackPath = "$buildCache\$develPackName"
       
-      Write-Host "Downloading PHP dev pack..."
+      Write-Host "Downloading PHP development pack: $develPackName"
       
-      $phpUrl = "https://windows.php.net/downloads/releases/php-devel-pack-8.5.1-Win32-vs17-${archSuffix}.zip"
-      $phpZip = "C:\php-dev.zip"
-      
-      Write-Host "URL: $phpUrl"
+      $url = "https://windows.php.net/downloads/releases/$develPackName"
       
       try {
         [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
         $webClient = New-Object System.Net.WebClient
         $webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-        $webClient.DownloadFile($phpUrl, $phpZip)
-        
-        $fileInfo = Get-Item $phpZip
-        Write-Host "Downloaded file size: $($fileInfo.Length) bytes"
-        
-        if ($fileInfo.Length -lt 100KB) {
-          Write-Host "ERROR: Downloaded file is too small (likely an error page)"
-          exit 1
-        }
-        
-        Write-Host "Extracting PHP dev pack..."
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDevDir)
-        Write-Host "Extracted PHP dev pack successfully"
+        $webClient.DownloadFile($url, $develPackPath)
+        Write-Host "Downloaded successfully"
       } catch {
-        Write-Host "ERROR: Failed to download/extract PHP dev pack: $_"
+        Write-Host "ERROR: Failed to download: $_"
         exit 1
       }
       
-      $env:PHP_DEV_PATH = $phpDevDir
+      Write-Host "Extracting $develPackName..."
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($develPackPath, $buildCache)
+      
+      $develDirName = "php-$phpVersion-devel-$vcVersion-$archSuffix"
+      $develDirPath = "$buildCache\$develDirName"
+      
+      if (-not (Test-Path $develDirPath)) {
+        Write-Host "ERROR: Extracted directory not found at $develDirPath"
+        Get-ChildItem $buildCache
+        exit 1
+      }
+      
+      Write-Host "PHP development pack extracted to: $develDirPath"
+      
+      $env:PHP_DEV_PATH = $develDirPath
+      $env:BUILD_CACHE = $buildCache
 
 build_script:
   - ps: |
       $arch = $env:ARCH
-      $phpDevPath = $env:PHP_DEV_PATH
+      $phpVersion = $env:PHP_VERSION
+      $vcVersion = $env:VC_VERSION
+      $develDirPath = $env:PHP_DEV_PATH
+      $buildCache = $env:BUILD_CACHE
+      $projectRoot = $env:APPVEYOR_BUILD_FOLDER
       
-      if ($arch -eq "x64") {
-        $vcvarsFile = "vcvars64.bat"
-      } else {
-        $vcvarsFile = "vcvars32.bat"
+      Write-Host "Build configuration:"
+      Write-Host "  ARCH: $arch"
+      Write-Host "  PHP Version: $phpVersion"
+      Write-Host "  VC Version: $vcVersion"
+      Write-Host "  Dev Path: $develDirPath"
+      Write-Host "  Project Root: $projectRoot"
+      
+      Set-Location $projectRoot
+      
+      if ($vcVersion -eq "vs17") {
+        $env:PHP_SDK_VS17_DIR = "C:\Program Files\Microsoft Visual Studio\2022\Community"
+        $env:PHP_SDK_VC_DIR = "C:\Program Files\Microsoft Visual Studio\2022\Community"
       }
       
-      $vsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
-      $vcvarsPath = "$vsPath\VC\Auxiliary\Build\$vcvarsFile"
+      $oldPath = $env:PATH
+      $env:PATH = "$develDirPath\bin;$develDirPath;$oldPath"
       
-      Write-Host "vcvarsPath: $vcvarsPath"
+      $phpizePath = Join-Path $develDirPath "phpize.bat"
       
-      if (-not (Test-Path $vcvarsPath)) {
-        Write-Host "ERROR: vcvars not found"
+      if (-not (Test-Path $phpizePath)) {
+        Write-Host "ERROR: phpize.bat not found at $phpizePath"
+        Get-ChildItem $develDirPath
         exit 1
       }
       
-      cd $env:APPVEYOR_BUILD_FOLDER
+      $taskFile = "$projectRoot\task.bat"
       
-      Write-Host "Build folder: $(Get-Location)"
-      Write-Host "Files in build folder:"
-      Get-ChildItem | ForEach-Object { Write-Host "  $_" }
+      @("cd $projectRoot",
+        "set PATH=$develDirPath\bin;$develDirPath;%PATH%",
+        "call `"$phpizePath`" 2>&1",
+        "if exist configure.bat (call configure.bat --enable-win32ps=shared --enable-debug-pack 2>&1) else (echo configure.bat not found & exit 1)",
+        "nmake /nologo 2>&1",
+        "exit %errorlevel%"
+      ) | Out-File -Encoding "ASCII" $taskFile
       
-      Write-Host "Running build commands..."
+      $runner = "$buildCache\php-sdk\phpsdk-$vcVersion-$arch.bat"
       
-      & cmd /c "`"$vcvarsPath`" && cscript.exe buildconf.bat"
+      if (-not (Test-Path $runner)) {
+        Write-Host "ERROR: PHP SDK runner not found at $runner"
+        Write-Host "Checking build cache:"
+        Get-ChildItem $buildCache -Recurse | Select-Object -First 20
+        exit 1
+      }
+      
+      Write-Host "Running build via $runner..."
+      & cmd /c "$runner -t $taskFile"
+      
       if ($LASTEXITCODE -ne 0) {
-        Write-Host "buildconf failed"
-        exit 1
+        Write-Host "Build failed with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
       }
       
-      & cmd /c "`"$vcvarsPath`" && cscript.exe configure.bat --enable-win32ps"
-      if ($LASTEXITCODE -ne 0) {
-        Write-Host "configure failed"
-        exit 1
-      }
-      
-      & cmd /c "`"$vcvarsPath`" && nmake"
-      if ($LASTEXITCODE -ne 0) {
-        Write-Host "nmake failed"
-        exit 1
-      }
+      $env:PATH = $oldPath
 
 after_build:
   - ps: |
       $arch = $env:ARCH
       $buildNumber = $env:APPVEYOR_BUILD_NUMBER
       $version = "2026.3.1.$buildNumber"
+      $projectRoot = $env:APPVEYOR_BUILD_FOLDER
       
-      $outputDir = "C:\artifacts"
-      if (Test-Path $outputDir) { Remove-Item $outputDir -Recurse -Force }
-      New-Item -ItemType Directory -Path $outputDir | Out-Null
+      $outputDir = if ($arch -eq "x64") { "$projectRoot\x64\Release_TS" } else { "$projectRoot\Release_TS" }
+      $dllPath = Join-Path $outputDir "php_win32ps.dll"
       
-      Write-Host "Searching for built DLL..."
+      Write-Host "Looking for DLL at: $dllPath"
       
-      $dllLocations = @(
-        "Release_TS\php_win32ps.dll",
-        "Release\php_win32ps.dll",
-        "x64\Release_TS\php_win32ps.dll",
-        "x64\Release\php_win32ps.dll",
-        "x86\Release_TS\php_win32ps.dll",
-        "x86\Release\php_win32ps.dll"
-      )
-      
-      $found = $false
-      foreach ($location in $dllLocations) {
-        if (Test-Path $location) {
-          Write-Host "Found DLL at: $location"
-          Copy-Item $location "$outputDir\php_win32ps-${version}-${arch}.dll"
-          $found = $true
-          break
-        }
-      }
-      
-      if (-not $found) {
-        Write-Host "DLL not found in expected locations, searching recursively..."
+      if (-not (Test-Path $dllPath)) {
+        Write-Host "DLL not found at expected location, searching..."
         $dlls = Get-ChildItem -Recurse -Filter "php_win32ps.dll" -ErrorAction SilentlyContinue
         if ($dlls) {
-          foreach ($dll in $dlls) {
-            Write-Host "Found DLL at: $($dll.FullName)"
-            Copy-Item $dll.FullName "$outputDir\php_win32ps-${version}-${arch}.dll"
-            $found = $true
-            break
-          }
+          $dllPath = $dlls[0].FullName
+          Write-Host "Found DLL at: $dllPath"
+        } else {
+          Write-Host "ERROR: DLL not found"
+          exit 1
         }
       }
       
-      if ($found) {
-        Write-Host "DLL copied to artifacts"
-        Get-ChildItem $outputDir
-      } else {
-        Write-Host "WARNING: DLL not found"
+      $artifactDir = "C:\artifacts"
+      if (-not (Test-Path $artifactDir)) {
+        New-Item -ItemType Directory -Path $artifactDir | Out-Null
       }
+      
+      $artifactName = "php_win32ps-${version}-${arch}.dll"
+      Copy-Item $dllPath "$artifactDir\$artifactName"
+      Write-Host "Artifact copied to: $artifactDir\$artifactName"
 
 artifacts:
   - path: C:\artifacts\*
