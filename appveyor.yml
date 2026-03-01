@@ -92,44 +92,24 @@ build_script:
       Write-Host "Files in build folder:"
       Get-ChildItem | ForEach-Object { Write-Host "  $_" }
       
-      # Create a batch script to run the build
-      $buildScript = @"
-@echo off
-setlocal enabledelayedexpansion
-
-REM Initialize Visual Studio environment
-call "$vcvarsPath"
-
-REM Set PHP dev paths
-set INCLUDE=$phpDevPath;%INCLUDE%
-set LIB=$phpDevPath;%LIB%
-
-REM Change to build directory
-cd /d "$env:APPVEYOR_BUILD_FOLDER"
-
-REM Run buildconf
-echo Running buildconf...
-cscript.exe buildconf.bat
-
-REM Run configure
-echo Running configure...
-cscript.exe configure.bat --enable-win32ps
-
-REM Run nmake
-echo Running nmake...
-nmake
-
-endlocal
-"@
+      Write-Host "Running build commands..."
       
-      $buildScript | Out-File -FilePath "C:\build.bat" -Encoding ASCII
-      
-      Write-Host "Running build script..."
-      & cmd /c "C:\build.bat"
-      
+      & cmd /c "`"$vcvarsPath`" && cscript.exe buildconf.bat"
       if ($LASTEXITCODE -ne 0) {
-        Write-Host "Build script failed with exit code: $LASTEXITCODE"
-        exit $LASTEXITCODE
+        Write-Host "buildconf failed"
+        exit 1
+      }
+      
+      & cmd /c "`"$vcvarsPath`" && cscript.exe configure.bat --enable-win32ps"
+      if ($LASTEXITCODE -ne 0) {
+        Write-Host "configure failed"
+        exit 1
+      }
+      
+      & cmd /c "`"$vcvarsPath`" && nmake"
+      if ($LASTEXITCODE -ne 0) {
+        Write-Host "nmake failed"
+        exit 1
       }
 
 after_build:
