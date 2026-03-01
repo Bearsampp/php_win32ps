@@ -18,7 +18,7 @@
 #include <windows.h>
 #include <psapi.h>
 
-#define PHP_WIN32PS_VERSION "2025.12.22"
+#define PHP_WIN32PS_VERSION "2026.3.1"
 #define PHP_WIN32PS_MAXPROC 256
 
 /* error flags */

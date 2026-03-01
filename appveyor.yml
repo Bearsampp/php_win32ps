@@ -1,0 +1,110 @@
+version: 2026.3.1.{build}
+
+environment:
+  matrix:
+    - PHP_VERSION: 8.5.30
+      VC_VERSION: 17
+      ARCH: x64
+    - PHP_VERSION: 8.5.30
+      VC_VERSION: 17
+      ARCH: x86
+
+image: Visual Studio 2022
+
+branches:
+  only:
+    - main
+    - /^8\.\d+$/
+
+skip_tags: false
+
+install:
+  - ps: |
+      $phpVersion = $env:PHP_VERSION
+      $vcVersion = $env:VC_VERSION
+      $arch = $env:ARCH
+      
+      # Download PHP dev pack from windows.php.net
+      $phpUrl = "https://windows.php.net/downloads/releases/php-${phpVersion}-devel-VC${vcVersion}-${arch}.zip"
+      $phpZip = "C:\php-dev.zip"
+      
+      Write-Host "Downloading PHP dev pack from: $phpUrl"
+      (New-Object Net.WebClient).DownloadFile($phpUrl, $phpZip)
+      
+      # Extract PHP dev pack
+      $phpDir = "C:\php-dev"
+      if (Test-Path $phpDir) { Remove-Item $phpDir -Recurse -Force }
+      New-Item -ItemType Directory -Path $phpDir | Out-Null
+      
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($phpZip, $phpDir)
+      
+      # Set environment variables
+      $env:PHP_DEV_PATH = $phpDir
+      $env:INCLUDE = "$phpDir;$env:INCLUDE"
+      $env:LIB = "$phpDir;$env:LIB"
+
+build_script:
+  - ps: |
+      $arch = $env:ARCH
+      $phpDevPath = $env:PHP_DEV_PATH
+      
+      # Determine platform for Visual Studio
+      if ($arch -eq "x64") {
+        $platform = "x64"
+      } else {
+        $platform = "Win32"
+      }
+      
+      # Build the extension
+      cd $env:APPVEYOR_BUILD_FOLDER
+      
+      # Run buildconf
+      php.exe buildconf.bat
+      
+      # Configure
+      .\configure.bat --enable-win32ps
+      
+      # Build
+      nmake
+
+after_build:
+  - ps: |
+      $arch = $env:ARCH
+      $phpVersion = $env:PHP_VERSION
+      $buildNumber = $env:APPVEYOR_BUILD_NUMBER
+      $version = "2026.3.1.$buildNumber"
+      
+      # Create output directory
+      $outputDir = "C:\artifacts"
+      if (Test-Path $outputDir) { Remove-Item $outputDir -Recurse -Force }
+      New-Item -ItemType Directory -Path $outputDir | Out-Null
+      
+      # Copy built DLL
+      $dllName = "php_win32ps.dll"
+      if (Test-Path "Release_TS\$dllName") {
+        Copy-Item "Release_TS\$dllName" "$outputDir\php_win32ps-${version}-${arch}.dll"
+      } elseif (Test-Path "Release\$dllName") {
+        Copy-Item "Release\$dllName" "$outputDir\php_win32ps-${version}-${arch}.dll"
+      }
+
+artifacts:
+  - path: C:\artifacts\*
+    name: php_win32ps
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: GH_PAT
+    artifact: php_win32ps
+    draft: false
+    prerelease: false
+    on:
+      branch: main
+      appveyor_repo_tag: true
+
+on_success:
+  - ps: Write-Host "Build successful for PHP $env:PHP_VERSION ($env:ARCH)"
+
+on_failure:
+  - ps: Write-Host "Build failed for PHP $env:PHP_VERSION ($env:ARCH)"
