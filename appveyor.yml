@@ -2,10 +2,12 @@ version: 2026.3.1.{build}
 
 environment:
   matrix:
-    - PHP_VERSION: 8.5.1
+    - PHP_VERSION: 8.5.30
+      DEV_PACK_VERSION: 8.5.1
       VC_VERSION: vs17
       ARCH: x64
-    - PHP_VERSION: 8.5.1
+    - PHP_VERSION: 8.5.30
+      DEV_PACK_VERSION: 8.5.1
       VC_VERSION: vs17
       ARCH: x86
 
@@ -21,7 +23,7 @@ skip_tags: false
 install:
   - ps: |
       $arch = $env:ARCH
-      $phpVersion = $env:PHP_VERSION
+      $devPackVersion = $env:DEV_PACK_VERSION
       $vcVersion = $env:VC_VERSION
       
       if ($arch -eq "x64") {
@@ -35,7 +37,7 @@ install:
         New-Item -ItemType Directory -Path $buildCache | Out-Null
       }
       
-      $develPackName = "php-devel-pack-$phpVersion-Win32-$vcVersion-$archSuffix.zip"
+      $develPackName = "php-devel-pack-$devPackVersion-Win32-$vcVersion-$archSuffix.zip"
       $develPackPath = "$buildCache\$develPackName"
       
       Write-Host "Downloading PHP development pack: $develPackName"
@@ -57,7 +59,7 @@ install:
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       [System.IO.Compression.ZipFile]::ExtractToDirectory($develPackPath, $buildCache)
       
-      $develDirName = "php-$phpVersion-devel-$vcVersion-$archSuffix"
+      $develDirName = "php-$devPackVersion-devel-$vcVersion-$archSuffix"
       $develDirPath = "$buildCache\$develDirName"
       
       if (-not (Test-Path $develDirPath)) {
@@ -105,32 +107,14 @@ build_script:
         exit 1
       }
       
-      $taskFile = "$projectRoot\task.bat"
+      Write-Host "Running phpize..."
+      & cmd /c "cd $projectRoot && call `"$phpizePath`""
       
-      @("cd $projectRoot",
-        "set PATH=$develDirPath\bin;$develDirPath;%PATH%",
-        "call `"$phpizePath`" 2>&1",
-        "if exist configure.bat (call configure.bat --enable-win32ps=shared --enable-debug-pack 2>&1) else (echo configure.bat not found & exit 1)",
-        "nmake /nologo 2>&1",
-        "exit %errorlevel%"
-      ) | Out-File -Encoding "ASCII" $taskFile
+      Write-Host "Running configure..."
+      & cmd /c "cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack"
       
-      $runner = "$buildCache\php-sdk\phpsdk-$vcVersion-$arch.bat"
-      
-      if (-not (Test-Path $runner)) {
-        Write-Host "ERROR: PHP SDK runner not found at $runner"
-        Write-Host "Checking build cache:"
-        Get-ChildItem $buildCache -Recurse | Select-Object -First 20
-        exit 1
-      }
-      
-      Write-Host "Running build via $runner..."
-      & cmd /c "$runner -t $taskFile"
-      
-      if ($LASTEXITCODE -ne 0) {
-        Write-Host "Build failed with exit code $LASTEXITCODE"
-        exit $LASTEXITCODE
-      }
+      Write-Host "Running nmake..."
+      & cmd /c "cd $projectRoot && nmake /nologo"
       
       $env:PATH = $oldPath
 
