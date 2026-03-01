@@ -120,10 +120,23 @@ build_script:
       & cmd /c "`"$vcvarsPath`" && cd $projectRoot && call `"$phpizePath`""
       
       Write-Host "Running configure..."
-      & cmd /c "`"$vcvarsPath`" && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack"
+      & cmd /c "`"$vcvarsPath`" && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all"
+      
+      if ($LASTEXITCODE -ne 0) {
+        Write-Host "Configure failed, checking for Makefile..."
+        if (-not (Test-Path "$projectRoot\Makefile")) {
+          Write-Host "ERROR: Makefile not created"
+          exit 1
+        }
+      }
       
       Write-Host "Running nmake..."
       & cmd /c "`"$vcvarsPath`" && cd $projectRoot && nmake /nologo"
+      
+      if ($LASTEXITCODE -ne 0) {
+        Write-Host "nmake failed with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
+      }
       
       $env:PATH = $oldPath
 
