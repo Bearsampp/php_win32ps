@@ -44,27 +44,9 @@ install:
         Write-Host "Warning: Could not install bison: $_"
       }
       
-      Write-Host "Installing re2c..."
-      $re2cDir = "C:\re2c"
-      if (-not (Test-Path $re2cDir)) {
-        New-Item -ItemType Directory -Path $re2cDir | Out-Null
-      }
-      
-      $re2cUrl = "https://github.com/skvadrik/re2c/releases/download/3.0/re2c-3.0-win64.zip"
-      $re2cZip = "C:\re2c.zip"
-      
-      Write-Host "Downloading re2c from $re2cUrl"
-      try {
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadFile($re2cUrl, $re2cZip)
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($re2cZip, $re2cDir)
-        Write-Host "re2c installed"
-        $env:PATH = "$re2cDir;$env:PATH"
-      } catch {
-        Write-Host "Warning: Could not install re2c: $_"
-      }
+      Write-Host "Installing re2c via Chocolatey..."
+      choco install -y re2c
+      Write-Host "re2c installed"
       
       $arch = $env:ARCH
       $devPackVersion = $env:DEV_PACK_VERSION
