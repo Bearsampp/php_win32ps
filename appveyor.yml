@@ -139,10 +139,10 @@ build_script:
       }
       
       Write-Host "Running phpize..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=C:\bison;%PATH% && cd $projectRoot && call `"$phpizePath`""
+      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && call `"$phpizePath`""
       
       Write-Host "Running configure..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=C:\bison;%PATH% && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all"
+      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all"
       
       if ($LASTEXITCODE -ne 0) {
         Write-Host "Configure failed, checking for Makefile..."
@@ -153,7 +153,7 @@ build_script:
       }
       
       Write-Host "Running nmake..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=C:\bison;%PATH% && cd $projectRoot && nmake /nologo"
+      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && nmake /nologo"
       
       if ($LASTEXITCODE -ne 0) {
         Write-Host "nmake failed with exit code $LASTEXITCODE"
