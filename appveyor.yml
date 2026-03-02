@@ -138,50 +138,43 @@ build_script:
         exit 1
       }
       
-      # Create a batch script to run all build commands with proper environment
-      $buildBat = @"
-@echo off
-setlocal enabledelayedexpansion
-
-REM Initialize Visual Studio environment
-call "$vcvarsPath"
-
-REM Add bison to PATH
-set PATH=C:\bison;%PATH%
-
-REM Change to project directory
-cd /d "$projectRoot"
-
-REM Run phpize
-echo Running phpize...
-call "$phpizePath"
-if errorlevel 1 exit /b 1
-
-REM Run configure
-echo Running configure...
-call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all
-if errorlevel 1 exit /b 1
-
-REM Run nmake
-echo Running nmake...
-nmake /nologo
-if errorlevel 1 exit /b 1
-
-endlocal
-"@
+      Write-Host "Creating build script..."
+      $buildBatPath = "$projectRoot\build.bat"
       
-      $buildBat | Out-File -FilePath "$projectRoot\build.bat" -Encoding ASCII
+      "@echo off" | Out-File -FilePath $buildBatPath -Encoding ASCII
+      "setlocal enabledelayedexpansion" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Initialize Visual Studio environment" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "call `"$vcvarsPath`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Add bison to PATH" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "set PATH=C:\bison;%PATH%" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Change to project directory" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "cd /d `"$projectRoot`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Run phpize" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "echo Running phpize..." | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "call `"$phpizePath`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "if errorlevel 1 exit /b 1" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Run configure" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "echo Running configure..." | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "if errorlevel 1 exit /b 1" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Run nmake" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "echo Running nmake..." | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "nmake /nologo" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "if errorlevel 1 exit /b 1" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "endlocal" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       
       Write-Host "Running build script..."
-      & cmd /c "$projectRoot\build.bat"
+      & cmd /c "$buildBatPath"
       
       if ($LASTEXITCODE -ne 0) {
         Write-Host "Build script failed with exit code $LASTEXITCODE"
-        exit $LASTEXITCODE
-      }
-      
-      if ($LASTEXITCODE -ne 0) {
-        Write-Host "nmake failed with exit code $LASTEXITCODE"
         exit $LASTEXITCODE
       }
       
