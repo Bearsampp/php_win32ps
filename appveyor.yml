@@ -44,6 +44,28 @@ install:
         Write-Host "Warning: Could not install bison: $_"
       }
       
+      Write-Host "Installing re2c..."
+      $re2cDir = "C:\re2c"
+      if (-not (Test-Path $re2cDir)) {
+        New-Item -ItemType Directory -Path $re2cDir | Out-Null
+      }
+      
+      $re2cUrl = "https://github.com/skvadrik/re2c/releases/download/3.1/re2c-3.1-w64.zip"
+      $re2cZip = "C:\re2c.zip"
+      
+      Write-Host "Downloading re2c from $re2cUrl"
+      try {
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($re2cUrl, $re2cZip)
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($re2cZip, $re2cDir)
+        Write-Host "re2c installed"
+        $env:PATH = "$re2cDir;$env:PATH"
+      } catch {
+        Write-Host "Warning: Could not install re2c: $_"
+      }
+      
       $arch = $env:ARCH
       $devPackVersion = $env:DEV_PACK_VERSION
       $vcVersion = $env:VC_VERSION
@@ -147,8 +169,8 @@ build_script:
       "REM Initialize Visual Studio environment" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "call `"$vcvarsPath`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
-      "REM Add bison to PATH and create bison.exe symlink" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
-      "set PATH=C:\bison;%PATH%" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Add bison and re2c to PATH and create bison.exe symlink" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "set PATH=C:\bison;C:\re2c;%PATH%" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "if exist C:\bison\win_bison.exe if not exist C:\bison\bison.exe copy C:\bison\win_bison.exe C:\bison\bison.exe" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "REM Change to project directory" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
