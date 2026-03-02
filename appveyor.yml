@@ -22,6 +22,9 @@ skip_tags: false
 
 install:
   - ps: |
+      Write-Host "Installing bison..."
+      choco install -y bison
+      
       $arch = $env:ARCH
       $devPackVersion = $env:DEV_PACK_VERSION
       $vcVersion = $env:VC_VERSION
