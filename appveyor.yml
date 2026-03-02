@@ -23,7 +23,26 @@ skip_tags: false
 install:
   - ps: |
       Write-Host "Installing bison..."
-      choco install -y bison
+      $bisonDir = "C:\bison"
+      if (-not (Test-Path $bisonDir)) {
+        New-Item -ItemType Directory -Path $bisonDir | Out-Null
+      }
+      
+      $bisonUrl = "https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip"
+      $bisonZip = "C:\bison.zip"
+      
+      Write-Host "Downloading bison from $bisonUrl"
+      try {
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+        $webClient = New-Object System.Net.WebClient
+        $webClient.DownloadFile($bisonUrl, $bisonZip)
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($bisonZip, $bisonDir)
+        Write-Host "Bison installed"
+        $env:PATH = "$bisonDir;$env:PATH"
+      } catch {
+        Write-Host "Warning: Could not install bison: $_"
+      }
       
       $arch = $env:ARCH
       $devPackVersion = $env:DEV_PACK_VERSION
