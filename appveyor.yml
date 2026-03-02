@@ -224,8 +224,7 @@ artifacts:
 
 deploy:
   - provider: GitHub
-    auth_token:
-      secure: $(GH_PAT)
+    auth_token: $(GH_PAT)
     artifact: php_win32ps
     draft: false
     prerelease: false
