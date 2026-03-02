@@ -50,7 +50,7 @@ install:
         New-Item -ItemType Directory -Path $re2cDir | Out-Null
       }
       
-      $re2cUrl = "https://github.com/skvadrik/re2c/releases/download/3.1/re2c-3.1-w64.zip"
+      $re2cUrl = "https://github.com/skvadrik/re2c/releases/download/3.0/re2c-3.0-win64.zip"
       $re2cZip = "C:\re2c.zip"
       
       Write-Host "Downloading re2c from $re2cUrl"
