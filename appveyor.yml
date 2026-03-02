@@ -128,7 +128,7 @@ build_script:
       }
       
       $oldPath = $env:PATH
-      $env:PATH = "$develDirPath\bin;$develDirPath;$oldPath"
+      $env:PATH = "C:\bison;$develDirPath\bin;$develDirPath;$oldPath"
       
       $phpizePath = Join-Path $develDirPath "phpize.bat"
       
