@@ -209,7 +209,7 @@ after_build:
         }
       }
       
-      $artifactDir = "C:\artifacts"
+      $artifactDir = "$projectRoot\artifacts"
       if (-not (Test-Path $artifactDir)) {
         New-Item -ItemType Directory -Path $artifactDir | Out-Null
       }
@@ -219,7 +219,7 @@ after_build:
       Write-Host "Artifact copied to: $artifactDir\$artifactName"
 
 artifacts:
-  - path: C:\artifacts\*
+  - path: artifacts\*
     name: php_win32ps
 
 deploy:
