@@ -138,22 +138,47 @@ build_script:
         exit 1
       }
       
-      Write-Host "Running phpize..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && call `"$phpizePath`""
+      # Create a batch script to run all build commands with proper environment
+      $buildBat = @"
+@echo off
+setlocal enabledelayedexpansion
+
+REM Initialize Visual Studio environment
+call "$vcvarsPath"
+
+REM Add bison to PATH
+set PATH=C:\bison;%PATH%
+
+REM Change to project directory
+cd /d "$projectRoot"
+
+REM Run phpize
+echo Running phpize...
+call "$phpizePath"
+if errorlevel 1 exit /b 1
+
+REM Run configure
+echo Running configure...
+call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all
+if errorlevel 1 exit /b 1
+
+REM Run nmake
+echo Running nmake...
+nmake /nologo
+if errorlevel 1 exit /b 1
+
+endlocal
+"@
       
-      Write-Host "Running configure..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && call configure.bat --enable-win32ps=shared --enable-debug-pack --disable-all"
+      $buildBat | Out-File -FilePath "$projectRoot\build.bat" -Encoding ASCII
+      
+      Write-Host "Running build script..."
+      & cmd /c "$projectRoot\build.bat"
       
       if ($LASTEXITCODE -ne 0) {
-        Write-Host "Configure failed, checking for Makefile..."
-        if (-not (Test-Path "$projectRoot\Makefile")) {
-          Write-Host "ERROR: Makefile not created"
-          exit 1
-        }
+        Write-Host "Build script failed with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
       }
-      
-      Write-Host "Running nmake..."
-      & cmd /c "`"$vcvarsPath`" && set PATH=%PATH%;C:\bison && cd $projectRoot && nmake /nologo"
       
       if ($LASTEXITCODE -ne 0) {
         Write-Host "nmake failed with exit code $LASTEXITCODE"
