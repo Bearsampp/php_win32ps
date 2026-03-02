@@ -147,8 +147,9 @@ build_script:
       "REM Initialize Visual Studio environment" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "call `"$vcvarsPath`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
-      "REM Add bison to PATH" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "REM Add bison to PATH and create bison.exe symlink" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "set PATH=C:\bison;%PATH%" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
+      "if exist C:\bison\win_bison.exe if not exist C:\bison\bison.exe copy C:\bison\win_bison.exe C:\bison\bison.exe" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "REM Change to project directory" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
       "cd /d `"$projectRoot`"" | Out-File -FilePath $buildBatPath -Append -Encoding ASCII
