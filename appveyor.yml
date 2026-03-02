@@ -225,12 +225,11 @@ artifacts:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: YOUR_GITHUB_TOKEN_HERE
+      secure: $(GH_PAT)
     artifact: php_win32ps
     draft: false
     prerelease: false
     on:
-      branch: main
       appveyor_repo_tag: true
 
 on_success:
