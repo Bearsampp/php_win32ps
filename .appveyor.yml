@@ -41,7 +41,7 @@ cache:
 
 build_script:
   ps: |
-    .\build_all.ps1 -PhpVersion "8.4.16" -VcVersion "vs17"
+    .\build_all.ps1 -PhpVersion "8.5.9" -VcVersion "vs17"
 
 deploy:
   - provider: GitHub
@@ -50,7 +50,7 @@ deploy:
     draft: false
     prerelease: false
     force_update: true
-    release: php_win32ps-8.4.16
-    tag: v8.4.16
+    release: php_win32ps-8.5.9
+    tag: v8.5.9
     on:
       branch: main

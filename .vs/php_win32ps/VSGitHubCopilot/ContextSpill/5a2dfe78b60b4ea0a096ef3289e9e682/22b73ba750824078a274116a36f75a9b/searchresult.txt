@@ -1,0 +1,259 @@
+﻿12 matches found: 
+<match path=E:\Bearsampp-development\php_win32ps\build_all.ps1>
+    File: `build_all.ps1`
+```powershell
+param(
+    [string]$PhpVersion = "8.4.16",
+    [string]$VcVersion = "vs17"
+)
+
+$ErrorActionPreference = "Stop"
+
+$archs = @("x64", "x86")
+$ts_options = @("1", "0")
+
+$projectRoot = "c:\projects\php_win32ps"
+$buildCache = "c:\build-cache"
+
+foreach ($arch in $archs) {
+    foreach ($ts in $ts_options) {
+        Write-Host "`n============================================================"
+        Write-Host "Building Variant: ARCH=$arch, TS=$ts"
+        Write-Host "============================================================`n"
+
+        $ts_part = if ($ts -eq "0") { "-nts" } else { "" }
+        $develPackName = "php-devel-pack-$PhpVersion$ts_part-Win32-$VcVersion-$arch.zip"
+        $develPackPath = "$buildCache\$develPackName"
+        
+        $url_releases = "https://windows.php.net/downloads/releases/$develPackName"
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\build_all.ps1>
+    File: `build_all.ps1`
+```powershell
+param(
+    [string]$PhpVersion = "8.4.16",
+    [string]$VcVersion = "vs17"
+)
+
+$ErrorActionPreference = "Stop"
+
+$archs = @("x64", "x86")
+$ts_options = @("1", "0")
+
+$projectRoot = "c:\projects\php_win32ps"
+$buildCache = "c:\build-cache"
+
+foreach ($arch in $archs) {
+    foreach ($ts in $ts_options) {
+        Write-Host "`n============================================================"
+        Write-Host "Building Variant: ARCH=$arch, TS=$ts"
+        Write-Host "============================================================`n"
+
+        $ts_part = if ($ts -eq "0") { "-nts" } else { "" }
+        $develPackName = "php-devel-pack-$PhpVersion$ts_part-Win32-$VcVersion-$arch.zip"
+        $develPackPath = "$buildCache\$develPackName"
+        
+        $url_releases = "https://windows.php.net/downloads/releases/$develPackName"
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\win32ps.c>
+    // Lines 163 to 179
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\win32ps.c>
+    // Lines 30 to 63
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\LICENSE>
+    File: `LICENSE`
+```text
+Copyright (c) 2005, Michael Wallner <mike@iworks.at>.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, 
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright 
+      notice, this list of conditions and the following disclaimer in the 
+      documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\LICENSE>
+    File: `LICENSE`
+```text
+Copyright (c) 2005, Michael Wallner <mike@iworks.at>.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, 
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright 
+      notice, this list of conditions and the following disclaimer in the 
+      documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\php_win32ps.h>
+    File: `php_win32ps.h`
+```c
+/*
+    +--------------------------------------------------------------------+
+    | PECL :: win32ps                                                    |
+    +--------------------------------------------------------------------+
+    | Redistribution and use in source and binary forms, with or without |
+    | modification, are permitted provided that the conditions mentioned |
+    | in the accompanying LICENSE file are met.                          |
+    +--------------------------------------------------------------------+
+    | Copyright (c) 2005, Michael Wallner <mike@php.net>                 |
+    +--------------------------------------------------------------------+
+*/
+
+/* $Id$ */
+
+#ifndef PHP_WIN32PS_H
+#define PHP_WIN32PS_H
+
+#include <windows.h>
+#include <psapi.h>
+
+#define PHP_WIN32PS_VERSION "2026.3.1-php8.5.30"
+#define PHP_WIN32PS_MAXPROC 256
+
+/* error flags */
+#define PHP_WIN32PS_NOTHING			0
+#define PHP_WIN32PS_PID				0x01
+#define PHP_WIN32PS_OPEN_HANDLE		0x02
+#define PHP_WIN32PS_FILE_NAME		0x04
+#define PHP_WIN32PS_MEM_INFO		0x08
+#define PHP_WIN32PS_PROC_TIMES		0x10
+
+#define PHP_WIN32PS_HANDLE_OPS \
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\php_win32ps.h>
+    File: `php_win32ps.h`
+```c
+/*
+    +--------------------------------------------------------------------+
+    | PECL :: win32ps                                                    |
+    +--------------------------------------------------------------------+
+    | Redistribution and use in source and binary forms, with or without |
+    | modification, are permitted provided that the conditions mentioned |
+    | in the accompanying LICENSE file are met.                          |
+    +--------------------------------------------------------------------+
+    | Copyright (c) 2005, Michael Wallner <mike@php.net>                 |
+    +--------------------------------------------------------------------+
+*/
+
+/* $Id$ */
+
+#ifndef PHP_WIN32PS_H
+#define PHP_WIN32PS_H
+
+#include <windows.h>
+#include <psapi.h>
+
+#define PHP_WIN32PS_VERSION "2026.3.1-php8.5.30"
+#define PHP_WIN32PS_MAXPROC 256
+
+/* error flags */
+#define PHP_WIN32PS_NOTHING			0
+#define PHP_WIN32PS_PID				0x01
+#define PHP_WIN32PS_OPEN_HANDLE		0x02
+#define PHP_WIN32PS_FILE_NAME		0x04
+#define PHP_WIN32PS_MEM_INFO		0x08
+#define PHP_WIN32PS_PROC_TIMES		0x10
+
+#define PHP_WIN32PS_HANDLE_OPS \
+...
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\README.md>
+    File: `README.md`
+```markdown
+# php_win32ps
+
+Win32ps is a tiny module which utilizes PSAPI (Process Status Helper) to get information about global memory usage and process specific memory and cpu time utilization.
+
+**PHP 8.3 ✅ | PHP 8.4 ✅ | PHP 8.5 ✅**
+
+This is a fork of [crispy-computing-machine/php_win32ps](https://github.com/crispy-computing-machine/php_win32ps) maintained to keep things more up-to-date.
+
+[![Build status](https://ci.appveyor.com/api/projects/status/github/Bearsampp/php_win32ps?branch=main&svg=true)](https://ci.appveyor.com/project/Bearsampp/php-win32ps)
+
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\README.md>
+    File: `README.md`
+```markdown
+# php_win32ps
+
+Win32ps is a tiny module which utilizes PSAPI (Process Status Helper) to get information about global memory usage and process specific memory and cpu time utilization.
+
+**PHP 8.3 ✅ | PHP 8.4 ✅ | PHP 8.5 ✅**
+
+This is a fork of [crispy-computing-machine/php_win32ps](https://github.com/crispy-computing-machine/php_win32ps) maintained to keep things more up-to-date.
+
+[![Build status](https://ci.appveyor.com/api/projects/status/github/Bearsampp/php_win32ps?branch=main&svg=true)](https://ci.appveyor.com/project/Bearsampp/php-win32ps)
+
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\win32ps.php>
+    File: `win32ps.php`
+```php
+<?php
+echo "\nwin32_ps_stat_mem():\n";
+print_r(win32_ps_stat_mem());
+echo "\nwin32_ps_stat_proc():\n";
+print_r(win32_ps_stat_proc());
+echo "\nwin32_ps_list_procs():\n";
+print_r(win32_ps_list_procs());
+?>
+
+```
+</match>
+<match path=E:\Bearsampp-development\php_win32ps\config.w32>
+    File: `config.w32`
+```javascript
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("win32ps", "enable win32ps support", "no");
+
+if (PHP_WIN32PS != "no") {
+	if (	CHECK_HEADER_ADD_INCLUDE("psapi.h", "CFLAGS_WIN32PS") && 
+			CHECK_LIB("psapi.lib", "win32ps", PHP_WIN32PS)) {
+		EXTENSION("win32ps", "win32ps.c");
+	} else {
+		WARNING("win32ps not enabled; please check if the MS Platform SDK Core is installed");
+	}
+}
+
+
+```
+</match>

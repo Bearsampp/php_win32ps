@@ -1,13 +1,13 @@
-version: 2026.3.1.{build}
+version: 2026.8.6.{build}
 
 environment:
   matrix:
-    - PHP_VERSION: 8.5.30
-      DEV_PACK_VERSION: 8.5.1
+    - PHP_VERSION: 8.5.9
+      DEV_PACK_VERSION: 8.5.9
       VC_VERSION: vs17
       ARCH: x64
-    - PHP_VERSION: 8.5.30
-      DEV_PACK_VERSION: 8.5.1
+    - PHP_VERSION: 8.5.9
+      DEV_PACK_VERSION: 8.5.9
       VC_VERSION: vs17
       ARCH: x86
 
