@@ -234,8 +234,8 @@ deploy:
     artifact: php_win32ps
     draft: false
     prerelease: false
-    on:
-      appveyor_repo_tag: true
+    force_update: true
+    tag: $(APPVEYOR_BUILD_VERSION)
 
 on_success:
   - ps: Write-Host "Build successful for PHP $env:PHP_VERSION ($env:ARCH)"
