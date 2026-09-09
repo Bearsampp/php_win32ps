@@ -1,4 +1,9 @@
-version: 2026.9.9.{build}
+version: 2026.09.09.{build}
+
+init:
+  - ps: |
+      $date = Get-Date -Format "yyyy.MM.dd"
+      Update-AppveyorBuild -Version "$date.$env:APPVEYOR_BUILD_NUMBER"
 
 environment:
   matrix:
@@ -189,7 +194,8 @@ after_build:
   - ps: |
       $arch = $env:ARCH
       $buildNumber = $env:APPVEYOR_BUILD_NUMBER
-      $version = "2026.3.1.$buildNumber"
+      $date = Get-Date -Format "yyyy.MM.dd"
+      $version = "$date.$buildNumber"
       $projectRoot = $env:APPVEYOR_BUILD_FOLDER
       
       $outputDir = if ($arch -eq "x64") { "$projectRoot\x64\Release_TS" } else { "$projectRoot\Release_TS" }
